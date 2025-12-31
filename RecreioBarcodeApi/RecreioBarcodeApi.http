@@ -1,0 +1,6 @@
+@RecreioBarcodeApi_HostAddress = http://localhost:5052
+
+GET {{RecreioBarcodeApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
