@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RecreioBarcodeApi.Services;
 
-namespace RecreioBarcodeApi.Controllers
+namespace RecreioBarcode.Api.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class InventoryController : Controller
     {
-        private readonly InventoryService _inventoryService;
+        private readonly InventoryService _service;
 
         public InventoryController(InventoryService invetoryService)
         {
-            _inventoryService = invetoryService;
+            _service = invetoryService;
         }
 
         [HttpPost]
@@ -31,9 +32,11 @@ namespace RecreioBarcodeApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateInventory()
+        public async Task<IActionResult> CreateInventory([FromBody] Inventory inventory)
         {
-            return View();
+   
+            await _service.CreateInventoryAsync(inventory);
+            return Ok(inventory);   
         }
 
         [HttpPost]

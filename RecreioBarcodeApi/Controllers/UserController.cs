@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace RecreioBarcodeApi.Controllers
+namespace RecreioBarcode.Api.Controllers
 {
     public class UserController : Controller
     {

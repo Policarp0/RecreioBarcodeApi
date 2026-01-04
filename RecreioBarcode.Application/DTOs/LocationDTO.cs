@@ -1,6 +1,6 @@
-﻿namespace RecreioBarcodeApi.Entities
-{
-    public sealed class Location
+﻿namespace RecreioBarcode.Application.DTOs
+{ 
+    public sealed class LocationDTO
     {
         public int Id { get; private set; }
         public char Zona { get; private set; }
@@ -9,8 +9,8 @@
         public char Prateleira { get; private set; }
         public int numero { get; private set; }
 
-        public ICollection<InventoryLocation> InventoryLocations{ get; set; }
-        public ICollection<InventoryItemOut> InventoryItemsOut{ get; set; }
+        public ICollection<InventoryLocationDTO> InventoryLocations{ get; set; }
+        public ICollection<InventoryItemOutDTO> InventoryItemsOut{ get; set; }
 
         public override string ToString()
         {

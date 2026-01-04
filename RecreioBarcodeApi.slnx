@@ -1,3 +1,7 @@
 <Solution>
-  <Project Path="RecreioBarcodeApi/RecreioBarcodeApi.csproj" />
+  <Project Path="RecreioBarcode.Application/RecreioBarcode.Application.csproj" Id="2b0a53ce-29ac-4341-97d9-f260b9f80da1" />
+  <Project Path="RecreioBarcode.Domain/RecreioBarcode.Domain.csproj" Id="4ec50ea1-4194-4900-b8cb-212bbe8bc6c4" />
+  <Project Path="RecreioBarcode.Infra.Data/RecreioBarcode.Infra.Data.csproj" Id="cb85a192-eb91-4837-8e58-1e4a526b8792" />
+  <Project Path="RecreioBarcode.Infra.IoC/RecreioBarcode.Infra.IoC.csproj" Id="7cbfe09f-063a-430f-8d96-cdc4b858b950" />
+  <Project Path="RecreioBarcodeApi/RecreioBarcode.Api.csproj" />
 </Solution>

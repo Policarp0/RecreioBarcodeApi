@@ -1,6 +1,8 @@
-﻿namespace RecreioBarcodeApi.Entities
+﻿using RecreioBarcode.Domain.Entities;
+
+namespace RecreioBarcode.Application.DTOs
 {
-    public sealed class InventoryLocation
+    public sealed class InventoryLocationDTO
     {
         public int Id { get; private set; }
         public bool IsInventoried { get; private set; }
@@ -9,9 +11,9 @@
         public int InventoryId { get; set; }
         public Inventory Inventory { get; set; }
         public int LocationId { get; set; }
-        public Location Location { get; set; }
-        public ICollection<InventoryLine> InventoryLines { get; set; }
+        public LocationDTO Location { get; set; }
+        public ICollection<InventoryLineDTO> InventoryLines { get; set; }
         public int UserId { get; set; }
-        public User User { get; set; }
+        public UserDTO User { get; set; }
     }
 }

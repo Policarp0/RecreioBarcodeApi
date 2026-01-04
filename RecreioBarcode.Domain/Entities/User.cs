@@ -1,4 +1,4 @@
-﻿namespace RecreioBarcodeApi.Entities
+﻿namespace RecreioBarcode.Domain.Entities
 {
     public sealed class User
     {
