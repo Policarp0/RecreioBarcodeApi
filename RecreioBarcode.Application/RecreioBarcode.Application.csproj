@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="ChargerFiles\" />
-    <Folder Include="Mappings\" />
   </ItemGroup>
 
   <ItemGroup>
