@@ -1,6 +1,6 @@
 ﻿namespace RecreioBarcode.Application.Services
 {
-    public class InventoryService
+    public class UserService
     {
     }
 }
