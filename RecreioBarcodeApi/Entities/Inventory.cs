@@ -11,6 +11,6 @@ namespace RecreioBarcodeApi.Entities
         public string ChargeArchivePath { get; private set; } = string.Empty;
 
         public ICollection<InventoryItemOut> InventoryItemsOut { get; set; }
-        public ICollection<InventoryLine> InventoryLines { get; set; }
+        public ICollection<InventoryLocation> InventoryLocations { get; set; }
     }
 }
