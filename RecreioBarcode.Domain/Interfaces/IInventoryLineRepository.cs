@@ -2,9 +2,9 @@
 
 namespace RecreioBarcode.Domain.Interfaces
 {
-    public interface IInvetoryLineRepository
+    public interface IInventoryLineRepository
     {
-        Task<InventoryLine> GetByIdAsync(int id);
+        Task<InventoryLine?> GetByIdAsync(int id);
         Task<IEnumerable<InventoryLine>> GetAllByInventoryLocationIdAsync(int inventoryLocationId);
         Task<IEnumerable<InventoryLine>> GetAllByInventoryIdAsync(int inventoryId);
         Task<IEnumerable<InventoryLine>> GetAllByInventoryLocationRangeAsync(
@@ -16,7 +16,7 @@ namespace RecreioBarcode.Domain.Interfaces
             int numeroInitial, int numeroFinal);
 
         Task<InventoryLine> CreateAsync(InventoryLine inventoryLine);
-        Task<InventoryLine> Update(InventoryLine inventoryLine);
-        Task<InventoryLine> Delete(int id);
+        Task<InventoryLine> UpdateAsync(InventoryLine inventoryLine);
+        Task<InventoryLine> DeleteAsync(InventoryLine inventoryLine);
     }
 }

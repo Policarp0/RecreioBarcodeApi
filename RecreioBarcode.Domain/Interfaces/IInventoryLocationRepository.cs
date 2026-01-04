@@ -4,15 +4,15 @@ namespace RecreioBarcode.Domain.Interfaces
 {
     public interface IInventoryLocationRepository
     {
-        Task<InventoryLocation> GetByInventoryIdAsync(int id);
-        Task<IEnumerable<InventoryLocation>> GetAllByZona(int inventoryId, char zona);
-        Task<IEnumerable<InventoryLocation>> GetAllByRua(int inventoryId, char rua);
-        Task<IEnumerable<InventoryLocation>> GetAllByEstante(int inventoryId, char estante);
-        Task<IEnumerable<InventoryLocation>> GetAllByPrateleira(int inventoryId, char prateleira);
-        Task<IEnumerable<InventoryLocation>> GetAllByNumero(int inventoryId, char numero);
+        Task<InventoryLocation?> GetByInventoryIdAsync(int id);
+        Task<IEnumerable<InventoryLocation>> GetAllByZonaAsync(int inventoryId, char zona);
+        Task<IEnumerable<InventoryLocation>> GetAllByRuaAsync(int inventoryId, char rua);
+        Task<IEnumerable<InventoryLocation>> GetAllByEstanteAsync(int inventoryId, char estante);
+        Task<IEnumerable<InventoryLocation>> GetAllByPrateleiraAsync(int inventoryId, char prateleira);
+        Task<IEnumerable<InventoryLocation>> GetAllByNumeroAsync(int inventoryId, char numero);
 
         Task<InventoryLocation> CreateAsync(InventoryLocation inventoryLocation);
-        Task<InventoryLocation> Update(InventoryLocation inventoryLocation);
-        Task<InventoryLocation> Delete(int id);
+        Task<InventoryLocation> UpdateAsync(InventoryLocation inventoryLocation);
+        Task<InventoryLocation> DeleteAsync(InventoryLocation inventoryLocation);
     }
 }

@@ -7,14 +7,14 @@
         public int Rua { get; private set; }
         public int Estante { get; private set; }
         public char Prateleira { get; private set; }
-        public int numero { get; private set; }
+        public int Numero { get; private set; }
 
-        public ICollection<InventoryLocation> InventoryLocations{ get; set; }
-        public ICollection<InventoryItemOut> InventoryItemsOut{ get; set; }
+        public ICollection<InventoryLocation> InventoryLocations{ get; set; }   // Uma locação pode estar em múltiplas Locações de inventário.
+        public ICollection<InventoryItemOut> InventoryItemsOut{ get; set; }     // Uma locação pode estar em múltiplos Itens fora do inventário.     
 
         public override string ToString()
         {
-            return $"{Zona}{Rua}-{Estante}-{Prateleira}{numero}";
+            return $"{Zona}{Rua}-{Estante}-{Prateleira}{Numero}";
         }
     }
 }

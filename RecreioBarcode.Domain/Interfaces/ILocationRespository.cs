@@ -4,13 +4,13 @@ namespace RecreioBarcode.Domain.Interfaces
 {
     public interface ILocationRepository
     {
-        Task<Location> GetById(int id);
-        Task<Location> GetByDetails(char zona, int rua, int estante, char prateleira, int numero);
+        Task<Location?> GetByIdAsync(int id);
+        Task<Location?> GetByDetailsAsync(char zona, int rua, int estante, char prateleira, int numero);
 
-        Task<IEnumerable<Location>> GetAll();
+        Task<IEnumerable<Location>> GetAllAsync();
 
-        Task<Location> Create(Location location);
-        Task<Location> Update(Location location);
-        Task<Location> Delete(int id);
+        Task<Location> CreateAsync(Location location);
+        Task<Location> UpdateAsync(Location location);
+        Task<Location> DeleteAsync(Location location);
     }
 }

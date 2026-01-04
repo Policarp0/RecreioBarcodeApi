@@ -4,11 +4,11 @@ namespace RecreioBarcode.Domain.Interfaces
 {
     public interface IInventoryItemOutRepository
     {
-        Task<InventoryItemOut> GetByIdAsync(int id);
-        Task<InventoryItemOut> GetAllByInventoryId(int inventoryId);
+        Task<InventoryItemOut?> GetByIdAsync(int id);
+        Task<IEnumerable<InventoryItemOut>> GetAllByInventoryIdAsync(int inventoryId);
 
-        Task<InventoryItemOut> Create(InventoryItemOut inventoryItemOut);
-        Task<InventoryItemOut> Update(InventoryItemOut inventoryItemOut);
-        Task<InventoryItemOut> Delete(int id);
+        Task<InventoryItemOut> CreateAsync(InventoryItemOut inventoryItemOut);
+        Task<InventoryItemOut> UpdateAsync(InventoryItemOut inventoryItemOut);
+        Task<InventoryItemOut> DeleteAsync(InventoryItemOut inventoryItemOut);
     }
 }

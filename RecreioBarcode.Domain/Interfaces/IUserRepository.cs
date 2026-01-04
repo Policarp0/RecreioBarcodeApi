@@ -4,7 +4,11 @@ namespace RecreioBarcode.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        public Task<User> GetAllAsync();
+        Task<IEnumerable<User>> GetAllAsync();
+
+        Task<User> CreateAsync (User user);
+        Task<User> UpdateAsync (User user);
+        Task<User> DeleteAsync (User user);
 
         //public Task<User> GetConnectedUsersCountAsync();
         //public Task<bool> IsUserConnectedAsync(string userId);
