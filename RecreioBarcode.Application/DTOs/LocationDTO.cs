@@ -2,12 +2,12 @@
 { 
     public sealed class LocationDTO
     {
-        public int Id { get; private set; }
-        public char Zona { get; private set; }
-        public int Rua { get; private set; }
-        public int Estante { get; private set; }
-        public char Prateleira { get; private set; }
-        public int numero { get; private set; }
+        public int Id { get; set; }
+        public char Zona { get; set; }
+        public int Rua { get; set; }
+        public int Estante { get; set; }
+        public char Prateleira { get; set; }
+        public int numero { get; set; }
 
         public ICollection<InventoryLocationDTO> InventoryLocations{ get; set; }
         public ICollection<InventoryItemOutDTO> InventoryItemsOut{ get; set; }
