@@ -1,12 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using RecreioBarcode.Infra.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi(); // Novo OpenAPI
-builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+builder.Services.AddInfrastructure(builder.Configuration);
     
 var app = builder.Build();
 
