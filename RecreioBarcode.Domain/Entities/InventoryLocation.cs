@@ -13,5 +13,28 @@
         public ICollection<InventoryLine> InventoryLines { get; set; } // Uma locação de inventário pode ter múltiplas linhas de inventário.
         public int UserId { get; set; }          // Foreign key para User.
         public User User { get; set; }           // Uma locação de inventário é feita por um usuário.
+
+        public InventoryLocation(bool isInventoried, DateTime inventoriedAt)
+        {
+            Validate(isInventoried, inventoriedAt);
+        }
+        public InventoryLocation(int id, bool isInventoried, DateTime inventoriedAt)
+        {
+            Id=id;
+            Validate(isInventoried, inventoriedAt);
+        }
+
+        private void Validate(bool isInventoried, DateTime inventoriedAt)
+        {
+            IsInventoried = isInventoried;
+            InventoriedAt = inventoriedAt;
+        }
+        public void Update(bool isInventoried, DateTime inventoriedAt, int inventoryId, int locationId, int userId)
+        {
+            InventoryId = inventoryId;
+            LocationId = locationId;
+            UserId = userId;
+            Validate(isInventoried, inventoriedAt);
+        }
     }
 }
