@@ -11,8 +11,8 @@ namespace RecreioBarcode.Domain.Entities
         public char Prateleira { get; private set; }
         public int Numero { get; private set; }
 
-        public ICollection<InventoryLocation> InventoryLocations{ get; set; }   // Uma locação pode estar em múltiplas Locações de inventário.
-        public ICollection<InventoryItemOut> InventoryItemsOut{ get; set; }     // Uma locação pode estar em múltiplos Itens fora do inventário.     
+        public ICollection<InventoryLocation>? InventoryLocations{ get; set; }   // Uma locação pode estar em múltiplas Locações de inventário.
+        public ICollection<InventoryItemOut>? InventoryItemsOut{ get; set; }     // Uma locação pode estar em múltiplos Itens fora do inventário.     
 
         public Location(char zona, int rua, int estante, char prateleira, int numero)
         {

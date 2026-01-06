@@ -7,7 +7,7 @@
         public int Count { get; private set; } = 0;
 
         public int InventoryLocationId { get; set; }             // Foreign key para InventoryLocation.
-        public InventoryLocation InventoryLocation { get; set; } // Uma linha de inventário pertence a uma locação de inventário.
+        public InventoryLocation? InventoryLocation { get; set; } // Uma linha de inventário pertence a uma locação de inventário.
 
         public InventoryLine(string itemCode, int count)
         {

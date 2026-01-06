@@ -7,11 +7,11 @@
         public int Count { get; private set; } = 1;
 
         public int InventoryId { get; set; }        // Foreign key para Inventory.
-        public Inventory Inventory { get; set; }    // Um item fora do inventário pertence a um inventário.
+        public Inventory? Inventory { get; set; }    // Um item fora do inventário pertence a um inventário.
         public int LocationId { get; set; }         // Foreign key para Location.
-        public Location Location { get; set; }      // Um item fora do inventário é encontrado em uma locação.
+        public Location? Location { get; set; }      // Um item fora do inventário é encontrado em uma locação.
         public int UserId { get; set; }             // Foreign key para User.
-        public User User { get; set; }              // Um item fora do inventário é registrado por um usuário.
+        public User? User { get; set; }              // Um item fora do inventário é registrado por um usuário.
 
         public InventoryItemOut(string itemCode, int count)
         {
