@@ -16,11 +16,9 @@ namespace RecreioBarcode.Infra.IoC
             // Register infrastructure services here, e.g., database context, repositories, etc.
 
             services.AddDbContext<ApplicationContext>(options =>
-            {
-                var connectionString = configuration.GetConnectionString("DefaultConnection");
-                options.UseSqlServer(connectionString);
-            });
-
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"
+                ), b=>b.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName)));
+   
             services.AddAutoMapper(cfg => cfg.AddProfile<DomainToDTOMappingProfile>());
 
             services.AddScoped<IInventoryRepository, InventoryRepository>();
