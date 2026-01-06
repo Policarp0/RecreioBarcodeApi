@@ -4,7 +4,8 @@ namespace RecreioBarcode.Domain.Interfaces
 {
     public interface IInventoryLocationRepository
     {
-        Task<InventoryLocation?> GetByInventoryIdAsync(int id);
+        Task<InventoryLocation?> GetByIdAsync(int id);
+        Task<IEnumerable<InventoryLocation>> GetByAllByInventoryIdAsync(int inventoryId);
         Task<IEnumerable<InventoryLocation>> GetAllByZonaAsync(int inventoryId, char zona);
         Task<IEnumerable<InventoryLocation>> GetAllByRuaAsync(int inventoryId, char rua);
         Task<IEnumerable<InventoryLocation>> GetAllByEstanteAsync(int inventoryId, char estante);

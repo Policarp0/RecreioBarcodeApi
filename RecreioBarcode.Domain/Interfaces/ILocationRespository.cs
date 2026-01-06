@@ -6,7 +6,6 @@ namespace RecreioBarcode.Domain.Interfaces
     {
         Task<Location?> GetByIdAsync(int id);
         Task<Location?> GetByDetailsAsync(char zona, int rua, int estante, char prateleira, int numero);
-
         Task<IEnumerable<Location>> GetAllAsync();
 
         Task<Location> CreateAsync(Location location);

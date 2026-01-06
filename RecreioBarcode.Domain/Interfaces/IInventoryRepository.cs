@@ -8,8 +8,8 @@ namespace RecreioBarcode.Domain.Interfaces
         Task<IEnumerable<Inventory>> GetAllActiveAsync();
         Task<IEnumerable<Inventory>> GetAllInactiveAsync();
         
-        Task<Inventory> CreateAssync(Inventory inventory);
-        Task<Inventory> UpdateAssync(Inventory inventory);
+        Task<Inventory> CreateAsync(Inventory inventory);
+        Task<Inventory> UpdateAsync(Inventory inventory);
         Task<Inventory> DeleteAsync(Inventory inventory);
     }
 }
