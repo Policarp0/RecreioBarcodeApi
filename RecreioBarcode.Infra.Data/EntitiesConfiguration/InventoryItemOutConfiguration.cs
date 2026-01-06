@@ -14,11 +14,6 @@ namespace RecreioBarcode.Infra.Data.EntitiesConfiguration
             builder.HasOne(x => x.Location).WithMany(x => x.InventoryItemsOut).HasForeignKey(x => x.LocationId);
             builder.HasOne(x => x.User).WithMany(x => x.InventoryItemsOut).HasForeignKey(x => x.UserId);
 
-            builder.HasData(
-                new InventoryItemOut(1, "jzz105150ab", 1),
-                new InventoryItemOut(1, "1sb201511", 2),
-                new InventoryItemOut(2, "04e155561h", 1),
-                new InventoryItemOut(2, "2qb201296q", 2));
         }
     }
 }

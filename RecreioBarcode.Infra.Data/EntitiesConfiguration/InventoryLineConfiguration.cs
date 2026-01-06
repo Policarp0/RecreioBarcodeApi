@@ -11,9 +11,6 @@ namespace RecreioBarcode.Infra.Data.EntitiesConfiguration
             builder.HasKey(x => x.Id);
 
             builder.HasOne(x => x.InventoryLocation).WithMany(x => x.InventoryLines).HasForeignKey(x => x.InventoryLocationId);
-
-            builder.HasData(
-                new InventoryLine(1, "jzz105150ab", 1));
         }
     }
 }

@@ -10,7 +10,10 @@ namespace RecreioBarcode.Infra.Data.EntitiesConfiguration
         {
             builder.HasKey(x => x.Id);
 
-            builder.HasData();
+            builder.HasData(
+                new User(1,"Thiago"),
+                new User(2,"Pedro"),
+                new User(3,"Franklin"));
                 
         }
     }
