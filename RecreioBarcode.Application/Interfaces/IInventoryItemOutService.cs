@@ -2,8 +2,8 @@
 
 namespace RecreioBarcode.Application.Interfaces
 {
-    public interface InventoryItemOutService : IService<InventoryItemOutDTO,int>
+    public interface IInventoryItemOutService : IService<InventoryItemOutDTO,int>
     {
-        Task<IEnumerable<InventoryDTO>> GetAllByInventoryId(int inventoryId);
+        Task<IEnumerable<InventoryItemOutDTO>> GetAllByInventoryId(int inventoryId);
     }
 }
