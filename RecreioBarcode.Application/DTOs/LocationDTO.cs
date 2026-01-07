@@ -17,7 +17,7 @@ namespace RecreioBarcode.Application.DTOs
         public char Prateleira { get; set; }
         [Range(1,999)]
         [Required]
-        public int numero { get; set; }
+        public int Numero { get; set; }
 
     }
 }

@@ -6,5 +6,7 @@ namespace RecreioBarcode.Application.Interfaces
     {
         Task<IEnumerable<InventoryDTO>> GetAllActiveAsync();
         Task<IEnumerable<InventoryDTO>> GetAllInactiveAsync();
+
+        Task<int> CreateFromCsv(InventoryDTO dto);
     }
 }

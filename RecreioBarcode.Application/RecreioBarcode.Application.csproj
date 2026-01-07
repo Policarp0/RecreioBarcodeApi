@@ -7,15 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ChargerFiles\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RecreioBarcode.Domain\RecreioBarcode.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="LoadFiles\" />
   </ItemGroup>
 
 </Project>
