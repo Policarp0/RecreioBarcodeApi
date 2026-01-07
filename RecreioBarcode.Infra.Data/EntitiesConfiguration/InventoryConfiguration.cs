@@ -13,7 +13,7 @@ namespace RecreioBarcode.Infra.Data.EntitiesConfiguration
 
             builder.HasData(
                 new Inventory(1, "Inventário Teste", new DateTime(2026, 1, 6, 14, 59, 25, DateTimeKind.Utc), null, true, @"\TesteFilePath"),
-                new Inventory(2, "Inventário Teste 2", new DateTime(2026, 1, 6, 14, 59, 25, DateTimeKind.Utc), new DateTime(2026, 1, 6, 14, 59, 25, DateTimeKind.Utc), false, @"\\TesteFilePath2"));      
+                new Inventory(2, "Inventário Teste 2", new DateTime(2026, 1, 6, 14, 59, 25, DateTimeKind.Utc), new DateTime(2026, 1, 6, 14, 59, 25, DateTimeKind.Utc), false, @"\TesteFilePath2"));      
         }
     }
 }
