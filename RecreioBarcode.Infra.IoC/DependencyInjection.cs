@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using RecreioBarcode.Application.Mappings;
 using RecreioBarcode.Domain.Interfaces;
 using RecreioBarcode.Infra.Data.Repositories;
+using RecreioBarcode.Application.Interfaces;
+using RecreioBarcode.Application.Services;
 
 namespace RecreioBarcode.Infra.IoC
 {
@@ -27,6 +29,13 @@ namespace RecreioBarcode.Infra.IoC
             services.AddScoped<IInventoryItemOutRepository, InventoryItemOutRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<IInventoryService, InventoryService>();
+            services.AddScoped<IInventoryLocationService, InventoryLocationService>();
+            services.AddScoped<IInventoryItemOutService, InventoryItemOutService>();
+            services.AddScoped<IInventoryLineService, InventoryLineService>();
+            services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }
