@@ -3,8 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RecreioBarcode.Application.DTOs
 {
-    public sealed class InventoryLocationDTO
+    public class InventoryLocationDTO
     {
+        public int Id { get; set; }
         [Required]
         public bool IsInventoried { get; set; } = false;
         [Required]

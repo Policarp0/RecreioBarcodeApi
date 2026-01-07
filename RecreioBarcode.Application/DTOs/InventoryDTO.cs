@@ -5,6 +5,7 @@ namespace RecreioBarcode.Application.DTOs
 {
     public class InventoryDTO
     {
+        public int Id { get; set; }
         [MaxLength(100)]
         [Required]
         public string Name { get; set; } = string.Empty;

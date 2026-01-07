@@ -2,8 +2,9 @@
 
 namespace RecreioBarcode.Application.DTOs
 { 
-    public sealed class LocationDTO
+    public class LocationDTO
     {
+        public int Id { get; set; }
         [Required]
         public char Zona { get; set; }
         [Range(1, 99)]
