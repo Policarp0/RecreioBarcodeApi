@@ -11,7 +11,7 @@ namespace RecreioBarcode.Infra.Data.Repositories
 
         public InventoryRepository(ApplicationContext context) { _context = context; }
 
-        public async Task<Inventory> CreateAssync(Inventory inventory)
+        public async Task<Inventory> CreateAsync(Inventory inventory)
         {
             _context.Inventories.Add(inventory);
             await _context.SaveChangesAsync();
@@ -40,7 +40,7 @@ namespace RecreioBarcode.Infra.Data.Repositories
             return await _context.Inventories.FindAsync(id);
         }
 
-        public async Task<Inventory> UpdateAssync(Inventory inventory)
+        public async Task<Inventory> UpdateAsync(Inventory inventory)
         {
             _context.Inventories.Update(inventory);
             await _context.SaveChangesAsync();

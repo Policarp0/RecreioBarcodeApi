@@ -10,6 +10,11 @@ namespace RecreioBarcode.Infra.Data.Repositories
         private readonly ApplicationContext _context;
         public InventoryLocationRepository(ApplicationContext context) { _context = context; }
 
+        public async Task<InventoryLocation?> GetByIdAsync(int id)
+        {
+            return await _context.InventoryLocations.FindAsync(id);
+        }
+
         public async Task<InventoryLocation> CreateAsync(InventoryLocation inventoryLocation)
         {
             _context.InventoryLocations.Add(inventoryLocation);
@@ -49,9 +54,9 @@ namespace RecreioBarcode.Infra.Data.Repositories
             return await _context.InventoryLocations.Where(x => x.InventoryId == inventoryId && x.Location.Zona == zona).ToListAsync();
         }
 
-        public async Task<InventoryLocation?> GetByInventoryIdAsync(int id)
+        public async Task<IEnumerable<InventoryLocation>> GetAllByInventoryIdAsync(int inventoryId)
         {
-            return await _context.InventoryLocations.FindAsync(id);
+            return await _context.InventoryLocations.Where(x => x.InventoryId == inventoryId).ToListAsync();
         }
 
         public async Task<InventoryLocation> UpdateAsync(InventoryLocation inventoryLocation)

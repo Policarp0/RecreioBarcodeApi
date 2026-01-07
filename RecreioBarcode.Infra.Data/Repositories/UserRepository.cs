@@ -10,6 +10,11 @@ namespace RecreioBarcode.Infra.Data.Repositories
         private readonly ApplicationContext _context;
         public UserRepository(ApplicationContext context){ _context = context;}
 
+        public async Task<User?> GetByIdAsync(int id)
+        {
+            return await _context.Users.FindAsync(id);
+        }
+
         public async Task<User> CreateAsync(User user)
         {
             _context.Users.Add(user);
