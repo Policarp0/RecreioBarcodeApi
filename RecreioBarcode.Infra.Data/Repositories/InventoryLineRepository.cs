@@ -5,24 +5,9 @@ using RecreioBarcode.Infra.Data.Context;
 
 namespace RecreioBarcode.Infra.Data.Repositories
 {
-    public class InventoryLineRepository : IInventoryLineRepository
+    public class InventoryLineRepository : Repository<InventoryLine>, IInventoryLineRepository
     {
-        private readonly ApplicationContext _context;
-        public InventoryLineRepository(ApplicationContext context) { _context = context; }
-
-        public async Task<InventoryLine> CreateAsync(InventoryLine inventoryLine)
-        {
-            _context.InventoryLines.Add(inventoryLine);
-            await _context.SaveChangesAsync();
-            return inventoryLine;
-        }
-
-        public async Task<InventoryLine> DeleteAsync(InventoryLine inventoryLine)
-        {
-            _context.InventoryLines.Remove(inventoryLine);
-            await _context.SaveChangesAsync();
-            return inventoryLine;
-        }
+        public InventoryLineRepository(ApplicationContext context) : base(context) { }
 
         public async Task<IEnumerable<InventoryLine>> GetAllByInventoryIdAsync(int inventoryId)
         {
@@ -69,18 +54,6 @@ namespace RecreioBarcode.Infra.Data.Repositories
                     l.InventoryLocation.Location.Numero <= numeroFinal
         )
         .ToListAsync();
-        }
-
-        public async Task<InventoryLine?> GetByIdAsync(int id)
-        {
-            return await _context.InventoryLines.FindAsync(id);
-        }
-
-        public async Task<InventoryLine> UpdateAsync(InventoryLine inventoryLine)
-        {
-            _context.InventoryLines.Update(inventoryLine);
-            await _context.SaveChangesAsync();
-            return inventoryLine;
         }
     }
 }
