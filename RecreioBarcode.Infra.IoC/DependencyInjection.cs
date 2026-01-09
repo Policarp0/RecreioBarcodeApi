@@ -8,6 +8,7 @@ using RecreioBarcode.Domain.Interfaces;
 using RecreioBarcode.Infra.Data.Repositories;
 using RecreioBarcode.Application.Interfaces;
 using RecreioBarcode.Application.Services;
+using RecreioBarcode.Infra.Data.UnitOfWork;
 
 namespace RecreioBarcode.Infra.IoC
 {
@@ -22,6 +23,9 @@ namespace RecreioBarcode.Infra.IoC
                 ), b=>b.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName)));
    
             services.AddAutoMapper(cfg => cfg.AddProfile<DomainToDTOMappingProfile>());
+
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IInventoryRepository, InventoryRepository>();
             services.AddScoped<IInventoryLocationRepository, InventoryLocationRepository>();
