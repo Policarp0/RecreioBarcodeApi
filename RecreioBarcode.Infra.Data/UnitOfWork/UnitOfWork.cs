@@ -1,4 +1,5 @@
 ﻿using RecreioBarcode.Domain.Interfaces;
+using RecreioBarcode.Domain.UnitOfWork;
 using RecreioBarcode.Infra.Data.Context;
 using RecreioBarcode.Infra.Data.Repositories;
 
@@ -6,22 +7,22 @@ namespace RecreioBarcode.Infra.Data.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private IInventoryRepository _inventoryRepository;
-        private IInventoryLineRepository _inventoryLineRepository;
-        private IInventoryLocationRepository _inventoryLocationRepository;
-        private IInventoryItemOutRepository _inventoryItemOutRepository;
-        private ILocationRepository _locationRepository;
-        private IUserRepository _userRepository;
+        private IInventoryRepository? _inventoryRepository;
+        private IInventoryLineRepository? _inventoryLineRepository;
+        private IInventoryLocationRepository? _inventoryLocationRepository;
+        private IInventoryItemOutRepository? _inventoryItemOutRepository;
+        private ILocationRepository? _locationRepository;
+        private IUserRepository? _userRepository;
 
         public ApplicationContext _context;
 
         public UnitOfWork(
-            IInventoryRepository inventoryRepository, 
-            IInventoryLineRepository inventoryLineRepository, 
-            IInventoryLocationRepository inventoryLocationRepository, 
-            IInventoryItemOutRepository inventoryItemOutRepository, 
-            ILocationRepository locationRepository, 
-            IUserRepository userRepository, 
+            IInventoryRepository? inventoryRepository, 
+            IInventoryLineRepository? inventoryLineRepository, 
+            IInventoryLocationRepository? inventoryLocationRepository, 
+            IInventoryItemOutRepository? inventoryItemOutRepository, 
+            ILocationRepository? locationRepository, 
+            IUserRepository? userRepository, 
             ApplicationContext context)
         {
             _context = context;
@@ -51,13 +52,13 @@ namespace RecreioBarcode.Infra.Data.UnitOfWork
         {
             get { return _userRepository ?? new UserRepository(_context); }
         }
-        public void Commit()
+        public async Task Commit()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void Dispose()
+        public async Task Dispose()
         {
-            _context.Dispose();
+            await _context.DisposeAsync();
         }
     }
 }

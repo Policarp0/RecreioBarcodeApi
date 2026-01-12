@@ -14,5 +14,6 @@ namespace RecreioBarcode.Application.DTOs
 
         [Required]
         public int InventoryLocationId { get; set; }
+        public InventoryLocationDTO InventoryLocation { get; set; } = null!;
     }
 }

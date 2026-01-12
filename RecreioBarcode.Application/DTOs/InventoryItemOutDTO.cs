@@ -5,18 +5,18 @@ namespace RecreioBarcode.Application.DTOs
     public class InventoryItemOutDTO
     {
         public int Id { get; set; }
-        [MaxLength(20)] 
-        [Required]
+
+        [MaxLength(20)][Required]
         public string ItemCode { get; set; } = string.Empty;
-        [Range(0,99_999)]
-        [Required]
+        [Range(0,99_999)][Required]
         public int CountedQuantity { get; set; } = 0;
-        [Required]
+
         public int InventoryId { get; set; }
-        [Required]
-        public int LocationFoundId { get; set; }
-        [Required]
+        public InventoryDTO Inventory { get; set; } = null!;
+        public int LocationId { get; set; }
+        public LocationDTO Location{ get; set; } = null!;
         public int UserId { get; set; }
+        public UserDTO User { get; set; } = null!;
 
     }
 }

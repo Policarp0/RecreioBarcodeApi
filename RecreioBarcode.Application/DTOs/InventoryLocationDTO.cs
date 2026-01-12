@@ -12,10 +12,13 @@ namespace RecreioBarcode.Application.DTOs
         public DateTime? InventoriedAt { get; set; }
         [Required]
         public int InventoryId { get; set; }
+        public InventoryDTO Inventory { get; set; } = null!;
         [Required]
         public int LocationId { get; set; }
+        public LocationDTO Location{ get; set; } = null!;
         [Required]
         public int? UserId { get; set; }
+        public UserDTO User { get; set; } = null!;
 
     }
 }

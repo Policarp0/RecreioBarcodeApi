@@ -7,16 +7,13 @@ namespace RecreioBarcode.Application.DTOs
         public int Id { get; set; }
         [Required]
         public char Zona { get; set; }
-        [Range(1, 99)]
-        [Required]
+        [Range(1, 99)] [Required]
         public int Rua { get; set; }
-        [Range(1,999)]
-        [Required]
+        [Range(1,999)] [Required]
         public int Estante { get; set; }
         [Required]
         public char Prateleira { get; set; }
-        [Range(1,999)]
-        [Required]
+        [Range(1,999)] [Required]
         public int Numero { get; set; }
 
     }

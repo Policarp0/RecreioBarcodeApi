@@ -2,7 +2,7 @@
 
 namespace RecreioBarcode.Application.Interfaces
 {
-    public interface IUserService : IService<UserDTO, int>
+    public interface IUserService
     {
         Task<IEnumerable<UserDTO>> GetAllAsync();
     }

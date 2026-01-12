@@ -2,99 +2,113 @@
 using RecreioBarcode.Application.DTOs;
 using RecreioBarcode.Application.Interfaces;
 using RecreioBarcode.Domain.Entities;
-using RecreioBarcode.Domain.Interfaces;
+using RecreioBarcode.Domain.UnitOfWork;
+
 
 namespace RecreioBarcode.Application.Services
 {
     public class InventoryService : IInventoryService
     {
         private readonly IMapper _mapper;
-        private readonly IInventoryRepository _inventoryRepository;
-
-        private readonly IInventoryLineService _inventoryLineService;
-        private readonly IInventoryLocationService _inventoryLocationService;
-        private readonly ILocationService _locationService;
+        private readonly IUnitOfWork _uow;
 
         public InventoryService(
             IMapper mapper,
-            IInventoryRepository inventoryRepository
-            ,
-            IInventoryLineService inventoryLineService,
-            IInventoryLocationService inventoryLocationService,
-            ILocationService locationService)
+            IUnitOfWork uow)
         {
-            _inventoryRepository = inventoryRepository;
-            _inventoryLineService = inventoryLineService;
-            _inventoryLocationService = inventoryLocationService;
-            _locationService = locationService;
             _mapper = mapper;
+            _uow = uow;
         }
-        public async Task<InventoryDTO> GetByIdAsync(int id)
+        public async Task<InventoryDTO> GetById(int id)
         {
-            var entity = await _inventoryRepository.GetByIdAsync(id)
+            var entity = await _uow.InventoryRepository.Get(x => x.Id == id)
                  ?? throw new KeyNotFoundException("Locação não encontrada");
             return _mapper.Map<InventoryDTO>(entity);
         }
         public async Task<IEnumerable<InventoryDTO>> GetAllActiveAsync()
         {
-            var entities = await _inventoryRepository.GetAllActiveAsync();            
+            var entities = await _uow.InventoryRepository.GetAllActiveAsync();            
             return _mapper.Map<IEnumerable<InventoryDTO>>(entities);
         }
-
         public async Task<IEnumerable<InventoryDTO>> GetAllInactiveAsync()
         {
-            var entities = await _repository.GetAllInactiveAsync();
+            var entities = await _uow.InventoryRepository.GetAllInactiveAsync();
             return _mapper.Map<IEnumerable<InventoryDTO>>(entities);
         }
-        public async Task<int> CreateFromCsv (InventoryDTO dto)
+        public async Task<InventoryDTO> CreateFromCsv (InventoryDTO dto)
         {
-            if (!ValidateFile(dto.ChargerFilePath))
+            if (!ValidateFile(@".\P\A.csv"))
                 throw new FileLoadException("Arquivo inválido");
 
-            var fileName = @".\LoadFIles\" + dto.Name + "-" + new Guid().ToString() + ".csv";
+            var entity = _mapper.Map<Inventory>(dto);
+            var inventoryEntity = _uow.InventoryRepository.Create(entity);
 
-            File.Copy(dto.ChargerFilePath,fileName);
-
-            using (StreamReader sr = new(fileName))
+            using (StreamReader sr = new(@".\P\A.csv"))
             {
                 string? line;
                 while((line = sr.ReadLine()) != null)
                 {
                     string[] parts = line.Split(";");
                     if (parts.Length != 2)
-                        break;
+                        throw new FileLoadException("Arquivo inválido");
 
-                    var d = CreateLocationDTOFromString(line[1]);
-                    
+                    var locationDto = CreateLocationDTOFromString(parts[1]);
+                    var locationEntity = _mapper.Map<Location>(locationDto); 
+                    if(await _uow.LocationRepository.GetByDetailsAsync(locationEntity) == null)
+                    {
+                        locationEntity = _uow.LocationRepository.Create(locationEntity);
+                    }
+                    else
+                    {
+                        locationEntity = await _uow.LocationRepository.GetByDetailsAsync(locationEntity);
+                    }
 
-                    if (_locationService.GetByDetailsAsync(d.Zona, d.Rua, d.Estante, d.Prateleira, d.Numero) == null)
-                        await _locationService.CreateAsync(d); 
+                    var inventoryLocationDto = new InventoryLocationDTO
+                    {
+                        Location = locationEntity,
+                        Inventory = inventoryEntity
+                    };
+                    var inventoryLocationEntity = _mapper.Map<InventoryLocation>(inventoryLocationDto);
+                    inventoryLocationEntity = _uow.InventoryLocationRepository.Create(inventoryLocationEntity);
+
+                    var inventoryLineDto = new InventoryLineDTO
+                    {
+                        InventoryLocation = inventoryLocationEntity,
+                        ItemCode = parts[0]
+                    };
+
+                    var inventoryLineEntity = _mapper.Map<InventoryLine>(inventoryLineDto);
+                    _uow.InventoryLineRepository.Create(inventoryLineEntity);
+
                 }
             }
-  
+            await _uow.Commit();
+            return _mapper.Map<InventoryDTO>(inventoryEntity);  
+        }
+        public async Task<bool> UpdateAsync(InventoryDTO dto)
+        {
+            var entity = await _uow.InventoryRepository.Get(x => x.Id == dto.Id)
+                ?? throw new KeyNotFoundException("Inventário não encontrada");
 
-            return 1;  
-        }
-        public async Task CreateAsync(InventoryDTO dto)
-        {
-            var entity = _mapper.Map<Inventory >(dto);
-            await _inventoryRepository.CreateAsync(entity);
-        }
-        public async Task UpdateAsync(InventoryDTO dto)
-        {
-            var entity = await _inventoryRepository.GetByIdAsync(dto.Id)
-                ?? throw new KeyNotFoundException("Locação não encontrada");
             _mapper.Map(dto, entity);
-            await _inventoryRepository.UpdateAsync(entity);
-        }
-        public async Task DeleteAsync(int id)
-        {
-            var entity = await _inventoryRepository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException("Locação não encontrada");
-            await _inventoryRepository.DeleteAsync(entity);
-        }
+            _uow.InventoryRepository.Update(entity);
 
-        public bool ValidateFile(string path)
+            await _uow.Commit();
+            return true;        
+        }
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var entity = await _uow.InventoryRepository.Get(x => x.Id == id)
+                ?? throw new KeyNotFoundException("Inventário nao encontrado");
+
+            _uow.InventoryRepository.Delete(entity);
+
+            await _uow.Commit();
+            return true;
+        }
+        
+        
+        private bool ValidateFile(string path)
         {
             if (!File.Exists(path))
                 return false;
@@ -110,15 +124,26 @@ namespace RecreioBarcode.Application.Services
 
             return true;
         }
-
-        private LocationDTO CreateLocationDTOFromString(string s)
+        private LocationDTO? CreateLocationDTOFromString(string s)
         {
-            LocationDTO dto = new();
+            
+            if(!char.TryParse(s.Substring(0,1).Trim(), out char zona))
+                return null;
+            if(!int.TryParse(s.Substring(1,2).Trim(), out int rua))
+                return null;
+            if(!int.TryParse(s.Substring(3,3).Trim(), out int estante))
+                return null;
+            if(!char.TryParse(s.Substring(6,1).Trim(), out char prateleira))
+                return null;
+            if(!int.TryParse(s.Substring(7,3).Trim(), out int numero))
+                return null;
 
+            return new LocationDTO { 
+                Zona = zona,
+                Rua = rua,
+                Estante = estante,
+                Prateleira  = prateleira,
+                Numero = numero };
         }
-
-
-
-
     }
 }

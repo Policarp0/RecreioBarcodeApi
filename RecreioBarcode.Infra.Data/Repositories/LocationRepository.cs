@@ -10,14 +10,14 @@ namespace RecreioBarcode.Infra.Data.Repositories
 
         public LocationRepository(ApplicationContext context) : base(context) { }
 
-        public async Task<Location?> GetByDetailsAsync(char zona, int rua, int estante, char prateleira, int numero)
+        public async Task<Location?> GetByDetailsAsync(Location location)
         {
             return await _context.Locations
-                .FirstOrDefaultAsync(x => x.Zona == zona &&
-                                          x.Rua == rua &&
-                                          x.Estante == estante &&
-                                          x.Prateleira == prateleira &&
-                                          x.Numero == numero);
+                .FirstOrDefaultAsync(x => x.Zona == location.Zona &&
+                                          x.Rua == location.Rua &&
+                                          x.Estante == location.Estante &&
+                                          x.Prateleira == location.Prateleira &&
+                                          x.Numero == location.Numero);
         }
     }
 }

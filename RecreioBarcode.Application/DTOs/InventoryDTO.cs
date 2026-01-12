@@ -6,18 +6,16 @@ namespace RecreioBarcode.Application.DTOs
     public class InventoryDTO
     {
         public int Id { get; set; }
+
         [MaxLength(100)]
         [Required]
         public string Name { get; set; } = string.Empty;
-        [Required]
         public DateTime? CreatedAt { get; set; }
-        [Required]
         public DateTime? FinishedAt { get; set; }
-        [Required]
-        public bool IsClosed { get; set; } = false;
+        public bool IsActive { get; set; } = false;
+
         [MaxLength(255)]
         [Required]
-        public string ChargerFilePath { get; set; } = string.Empty;
-
+        public IFormFile? File { get; set; }
     }
 }

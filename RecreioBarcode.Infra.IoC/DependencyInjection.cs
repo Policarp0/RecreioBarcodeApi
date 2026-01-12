@@ -9,6 +9,7 @@ using RecreioBarcode.Infra.Data.Repositories;
 using RecreioBarcode.Application.Interfaces;
 using RecreioBarcode.Application.Services;
 using RecreioBarcode.Infra.Data.UnitOfWork;
+using RecreioBarcode.Domain.UnitOfWork;
 
 namespace RecreioBarcode.Infra.IoC
 {
@@ -19,8 +20,10 @@ namespace RecreioBarcode.Infra.IoC
             // Register infrastructure services here, e.g., database context, repositories, etc.
 
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"
+                options
+                .UseSqlServer(configuration.GetConnectionString("DefaultConnection"
                 ), b=>b.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName)));
+
    
             services.AddAutoMapper(cfg => cfg.AddProfile<DomainToDTOMappingProfile>());
 

@@ -16,12 +16,7 @@ namespace RecreioBarcode.Application.Services
             _repository = repository;
             _mapper = mapper;
         }
-        public async Task<InventoryLocationDTO> GetByIdAsync(int id)
-        {
-            var entity = await _repository.GetByIdAsync(id)
-                 ?? throw new KeyNotFoundException("Locação não encontrada");
-            return _mapper.Map<InventoryLocationDTO>(entity);
-        }
+
         public async Task<IEnumerable<InventoryLocationDTO>> GetAllByInventoryIdAsync(int inventoryId)
         {
             var entities = await _repository.GetAllByInventoryIdAsync(inventoryId);
@@ -56,28 +51,5 @@ namespace RecreioBarcode.Application.Services
             var entities = await _repository.GetAllByZonaAsync(inventoryId, zona);
             return _mapper.Map<IEnumerable<InventoryLocationDTO>>(entities);
         }
-
-        public async Task CreateAsync(InventoryLocationDTO dto)
-        {
-            var entity = _mapper.Map<InventoryLocation>(dto);
-            await _repository.CreateAsync(entity);
-        }
-        public async Task UpdateAsync(InventoryLocationDTO dto)
-        {
-            var entity = await _repository.GetByIdAsync(dto.Id)
-                ?? throw new KeyNotFoundException("Locação não encontrada");
-            _mapper.Map(dto, entity);
-            await _repository.UpdateAsync(entity);
-        }
-        public async Task DeleteAsync(int id)
-        {
-            var entity = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException("Locação não encontrada");
-            await _repository.DeleteAsync(entity);
-        }
-
-
-
-
     }
 }

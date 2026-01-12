@@ -1,6 +1,6 @@
 ﻿using RecreioBarcode.Domain.Interfaces;
 
-namespace RecreioBarcode.Infra.Data.UnitOfWork
+namespace RecreioBarcode.Domain.UnitOfWork
 {
     public interface IUnitOfWork
     {
@@ -11,7 +11,7 @@ namespace RecreioBarcode.Infra.Data.UnitOfWork
         ILocationRepository LocationRepository { get; }
         IUserRepository UserRepository { get; }
 
-        public void Commit();
-        public void Dispose();
+        Task Commit();
+        Task Dispose();
     }
 }

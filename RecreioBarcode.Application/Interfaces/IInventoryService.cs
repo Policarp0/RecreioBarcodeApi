@@ -2,11 +2,13 @@
 
 namespace RecreioBarcode.Application.Interfaces
 {
-    public interface IInventoryService : IService<InventoryDTO,int>
+    public interface IInventoryService
     {
+        Task<InventoryDTO> GetById(int id);
         Task<IEnumerable<InventoryDTO>> GetAllActiveAsync();
         Task<IEnumerable<InventoryDTO>> GetAllInactiveAsync();
-
-        Task<int> CreateFromCsv(InventoryDTO dto);
+        Task<InventoryDTO> CreateFromCsv(InventoryDTO dto);
+        Task<bool> UpdateAsync(InventoryDTO dto);
+        Task<bool> DeleteAsync(int id);
     }
 }
