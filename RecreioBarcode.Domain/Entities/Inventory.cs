@@ -8,6 +8,7 @@ namespace RecreioBarcode.Domain.Entities
         public DateTime? CreatedAt { get; private set; } = DateTime.Now;
         public DateTime? FinishedAt { get; private set; } = null;
         public bool IsActive { get; private set; } = true;
+        public bool ItStarted { get; private set; } = false;
         public string File { get; private set; } = string.Empty;
 
         public ICollection<InventoryItemOut>? InventoryItemsOut { get; set; }           // Um inventário pode ter múltiplos itens fora do inventário.

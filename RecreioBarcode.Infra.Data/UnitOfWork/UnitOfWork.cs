@@ -1,64 +1,58 @@
-﻿using RecreioBarcode.Domain.Interfaces;
+﻿using RecreioBarcode.Domain.Entities;
+using RecreioBarcode.Domain.Interfaces;
 using RecreioBarcode.Domain.UnitOfWork;
 using RecreioBarcode.Infra.Data.Context;
 using RecreioBarcode.Infra.Data.Repositories;
 
-namespace RecreioBarcode.Infra.Data.UnitOfWork
+namespace RecreioBarcode.Infra.Data.UnitOfWork;
+
+public class UnitOfWork : IUnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork
+    private IRepository<Inventory>? _inventoryRepository;
+    private IRepository<InventoryLine>? _inventoryLineRepository;
+    private IRepository<InventoryLocation>? _inventoryLocationRepository;
+    private IRepository<InventoryItemOut>? _inventoryItemOutRepository;
+    private IRepository<Location>? _locationRepository;
+
+    public ApplicationContext _context;
+
+    public UnitOfWork(
+        IRepository<Inventory>? inventoryRepository,
+        IRepository<InventoryLine>? inventoryLineRepository,
+        IRepository<InventoryLocation>? inventoryLocationRepository,
+        IRepository<InventoryItemOut>? inventoryItemOutRepository,
+        IRepository<Location>? locationRepository, 
+        ApplicationContext context)
     {
-        private IInventoryRepository? _inventoryRepository;
-        private IInventoryLineRepository? _inventoryLineRepository;
-        private IInventoryLocationRepository? _inventoryLocationRepository;
-        private IInventoryItemOutRepository? _inventoryItemOutRepository;
-        private ILocationRepository? _locationRepository;
-        private IUserRepository? _userRepository;
+        _context = context;
+    }
 
-        public ApplicationContext _context;
-
-        public UnitOfWork(
-            IInventoryRepository? inventoryRepository, 
-            IInventoryLineRepository? inventoryLineRepository, 
-            IInventoryLocationRepository? inventoryLocationRepository, 
-            IInventoryItemOutRepository? inventoryItemOutRepository, 
-            ILocationRepository? locationRepository, 
-            IUserRepository? userRepository, 
-            ApplicationContext context)
-        {
-            _context = context;
-        }
-
-        public IInventoryRepository InventoryRepository
-        {
-            get { return _inventoryRepository ??  new InventoryRepository(_context); } 
-        }
-        public IInventoryLocationRepository InventoryLocationRepository
-        {
-            get { return _inventoryLocationRepository ?? new InventoryLocationRepository(_context); }
-        }
-        public IInventoryLineRepository InventoryLineRepository
-        {
-            get { return _inventoryLineRepository ?? new InventoryLineRepository(_context); }
-        }
-        public IInventoryItemOutRepository InventoryItemOutRepository
-        {
-            get { return _inventoryItemOutRepository ?? new InventoryItemOutRepository(_context); }
-        }
-        public ILocationRepository LocationRepository
-        {
-            get { return _locationRepository ?? new LocationRepository(_context); }
-        }
-        public IUserRepository UserRepository
-        {
-            get { return _userRepository ?? new UserRepository(_context); }
-        }
-        public async Task Commit()
-        {
-            await _context.SaveChangesAsync();
-        }
-        public async Task Dispose()
-        {
-            await _context.DisposeAsync();
-        }
+    public IRepository<Inventory> InventoryRepository
+    {
+        get { return _inventoryRepository ??  new Repository<Inventory>(_context); } 
+    }
+    public IRepository<InventoryLocation> InventoryLocationRepository
+    {
+        get { return _inventoryLocationRepository ?? new Repository<InventoryLocation>(_context); }
+    }
+    public IRepository<InventoryLine> InventoryLineRepository
+    {
+        get { return _inventoryLineRepository ?? new Repository<InventoryLine>(_context); }
+    }
+    public IRepository<InventoryItemOut> InventoryItemOutRepository
+    {
+        get { return _inventoryItemOutRepository ?? new Repository<InventoryItemOut>(_context); }
+    }
+    public IRepository<Location> LocationRepository
+    {
+        get { return _locationRepository ?? new Repository<Location>(_context); }
+    }
+    public async Task Commit()
+    {
+        await _context.SaveChangesAsync();
+    }
+    public async Task Dispose()
+    {
+        await _context.DisposeAsync();
     }
 }

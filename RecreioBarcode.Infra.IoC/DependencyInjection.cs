@@ -10,6 +10,7 @@ using RecreioBarcode.Application.Interfaces;
 using RecreioBarcode.Application.Services;
 using RecreioBarcode.Infra.Data.UnitOfWork;
 using RecreioBarcode.Domain.UnitOfWork;
+using RecreioBarcode.Domain.Entities;
 
 namespace RecreioBarcode.Infra.IoC
 {
@@ -30,19 +31,14 @@ namespace RecreioBarcode.Infra.IoC
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddScoped<IInventoryRepository, InventoryRepository>();
-            services.AddScoped<IInventoryLocationRepository, InventoryLocationRepository>();
-            services.AddScoped<IInventoryLineRepository, InventoryLineRepository>();
-            services.AddScoped<IInventoryItemOutRepository, InventoryItemOutRepository>();
-            services.AddScoped<ILocationRepository, LocationRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            //services.AddScoped<IRepository<Inventory>>, Repository<Inventory>>();
+            //services.AddScoped<IInventoryLocationRepository, InventoryLocationRepository>();
+            //services.AddScoped<IInventoryLineRepository, InventoryLineRepository>();
+            //services.AddScoped<IInventoryItemOutRepository, InventoryItemOutRepository>();
+            //services.AddScoped<ILocationRepository, LocationRepository>();
+            //services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IInventoryService, InventoryService>();
-            services.AddScoped<IInventoryLocationService, InventoryLocationService>();
-            services.AddScoped<IInventoryItemOutService, InventoryItemOutService>();
-            services.AddScoped<IInventoryLineService, InventoryLineService>();
-            services.AddScoped<ILocationService, LocationService>();
-            services.AddScoped<IUserService, UserService>();
 
             return services;
         }

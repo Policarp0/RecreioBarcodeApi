@@ -4,8 +4,8 @@ namespace RecreioBarcode.Domain.Interfaces
 {
     public interface IRepository<T>
     {
+        Task <IEnumerable<T>> GetAll(Expression<Func<T, bool>> predicate);
         Task<T?> Get(Expression<Func<T,bool>> predicate);
-        Task<IEnumerable<T>> GetAll();
         T Create(T entity);
         T Update(T entity);
         T Delete(T entity);

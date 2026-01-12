@@ -1,15 +1,15 @@
-﻿using RecreioBarcode.Domain.Interfaces;
+﻿using RecreioBarcode.Domain.Entities;
+using RecreioBarcode.Domain.Interfaces;
 
 namespace RecreioBarcode.Domain.UnitOfWork
 {
     public interface IUnitOfWork
     {
-        IInventoryRepository InventoryRepository { get; }
-        IInventoryLocationRepository InventoryLocationRepository{ get; }
-        IInventoryLineRepository InventoryLineRepository { get; }
-        IInventoryItemOutRepository InventoryItemOutRepository { get; }
-        ILocationRepository LocationRepository { get; }
-        IUserRepository UserRepository { get; }
+        IRepository<Inventory> InventoryRepository { get; }
+        IRepository<InventoryLocation> InventoryLocationRepository { get; }
+        IRepository<InventoryLine> InventoryLineRepository { get; }
+        IRepository<InventoryItemOut> InventoryItemOutRepository { get; }
+        IRepository<Location> LocationRepository { get; }
 
         Task Commit();
         Task Dispose();
