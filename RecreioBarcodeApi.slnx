@@ -3,5 +3,6 @@
   <Project Path="RecreioBarcode.Domain/RecreioBarcode.Domain.csproj" Id="4ec50ea1-4194-4900-b8cb-212bbe8bc6c4" />
   <Project Path="RecreioBarcode.Infra.Data/RecreioBarcode.Infra.Data.csproj" Id="cb85a192-eb91-4837-8e58-1e4a526b8792" />
   <Project Path="RecreioBarcode.Infra.IoC/RecreioBarcode.Infra.IoC.csproj" Id="7cbfe09f-063a-430f-8d96-cdc4b858b950" />
+  <Project Path="RecreioBarcode.WebUI/RecreioBarcode.WebUI.csproj" Id="b44a20cd-d9cf-4d41-a667-b0afd30ab1bb" />
   <Project Path="RecreioBarcodeApi/RecreioBarcode.Api.csproj" />
 </Solution>

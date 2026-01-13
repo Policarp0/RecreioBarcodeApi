@@ -15,7 +15,7 @@ public class InventoriesController(IInventoryService inventoryService) : Control
     [HttpGet]
     public async Task<IActionResult> GetInventoriesByStatus(bool isActive)
     {
-        var inventories = await _inventoryService.GetAllAsync(x => x.IsActive == isActive); 
+        var inventories = await _inventoryService.GetAllWhereAsync(x => x.IsActive == isActive); 
         return Ok(inventories);
     }
 

@@ -13,14 +13,24 @@ public class InventoryService(IMapper mapper, IUnitOfWork uow) : IInventoryServi
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _uow = uow;
 
-    public async Task<InventoryDTO> GetAsync(Expression<Func<Inventory, bool>> predicate)
+    public async Task<InventoryDTO> GetByIdAsync(int id)
     {
-        var entity = await _uow.InventoryRepository.Get(predicate);
+        var entity = await _uow.InventoryRepository.GetByIdAsync(id);
         return _mapper.Map<InventoryDTO>(entity);
     }
-    public async Task<IEnumerable<InventoryDTO>> GetAllAsync(Expression<Func<Inventory, bool>> predicate)
+    public async Task<InventoryDTO> GetWhereAsync(Expression<Func<Inventory, bool>> predicate)
     {
-        var entities = await _uow.InventoryRepository.GetAll(predicate);
+        var entity = await _uow.InventoryRepository.GetWhereAsync(predicate);
+        return _mapper.Map<InventoryDTO>(entity);
+    }
+    public async Task<IEnumerable<InventoryDTO>> GetAllAsync()
+    {
+        var entities = await _uow.InventoryRepository.GetAllAsync();
+        return _mapper.Map<IEnumerable<InventoryDTO>>(entities);
+    }
+    public async Task<IEnumerable<InventoryDTO>> GetAllWhereAsync(Expression<Func<Inventory, bool>> predicate)
+    {
+        var entities = await _uow.InventoryRepository.GetAllWhereAsync(predicate);
         return _mapper.Map<IEnumerable<InventoryDTO>>(entities);
     }
     public async Task<InventoryDTO?> CreateFromCsvAsync(Stream stream)
@@ -45,7 +55,7 @@ public class InventoryService(IMapper mapper, IUnitOfWork uow) : IInventoryServi
                 if (locationDto == null)
                     return null;
 
-                var locationEntity = await _uow.LocationRepository.Get(x =>
+                var locationEntity = await _uow.LocationRepository.GetWhereAsync(x =>
                     x.Zona == locationDto.Zona &&
                     x.Rua == locationDto.Rua &&
                     x.Estante == locationDto.Estante &&
@@ -63,7 +73,7 @@ public class InventoryService(IMapper mapper, IUnitOfWork uow) : IInventoryServi
                     Inventory = inventoryDto,
                     Location = locationDto,
                 };
-                var inventoryLocationEntity = await _uow.InventoryLocationRepository.Get(x => x.Inventory == inventoryEntity && x.Location == locationEntity);
+                var inventoryLocationEntity = await _uow.InventoryLocationRepository.GetWhereAsync(x => x.Inventory == inventoryEntity && x.Location == locationEntity);
                 if (inventoryLocationEntity == null)
                 {
                     _mapper.Map(inventoryLocationDto, inventoryLocationEntity);
@@ -86,7 +96,7 @@ public class InventoryService(IMapper mapper, IUnitOfWork uow) : IInventoryServi
     }
     public async Task<bool> UpdateAsync(int id, UpdateInventoryDTO dto)
     {
-        var entity = await _uow.InventoryRepository.Get(x => x.Id == id);
+        var entity = await _uow.InventoryRepository.GetByIdAsync(id);
         if (entity is null)
             return false;
 
@@ -97,7 +107,7 @@ public class InventoryService(IMapper mapper, IUnitOfWork uow) : IInventoryServi
     }
     public async Task<bool> DeleteAsync(int id)
     {
-        var entity = await _uow.InventoryRepository.Get(x => x.Id == id);
+        var entity = await _uow.InventoryRepository.GetByIdAsync(id);
         if (entity is null)
             return false;
 
@@ -117,7 +127,6 @@ public class InventoryService(IMapper mapper, IUnitOfWork uow) : IInventoryServi
 
         return true;
     }
-
     private LocationDTO? CreateLocationDTOFromString(string s)
     {
         if (!char.TryParse(s.Substring(0, 1).Trim(), out char zona))

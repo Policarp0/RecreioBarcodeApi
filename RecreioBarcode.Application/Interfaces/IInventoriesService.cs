@@ -6,8 +6,10 @@ namespace RecreioBarcode.Application.Interfaces
 {
     public interface IInventoryService
     {
-        Task<InventoryDTO> GetAsync(Expression<Func<Inventory, bool>> predicate);
-        Task<IEnumerable<InventoryDTO>> GetAllAsync(Expression<Func<Inventory, bool>> predicate);
+        Task<InventoryDTO> GetByIdAsync(int id);
+        Task<InventoryDTO> GetWhereAsync(Expression<Func<Inventory, bool>> predicate);
+        Task<IEnumerable<InventoryDTO>> GetAllAsync();
+        Task<IEnumerable<InventoryDTO>> GetAllWhereAsync(Expression<Func<Inventory, bool>> predicate);
         Task<InventoryDTO?> CreateFromCsvAsync(Stream stream);
         Task<bool> UpdateAsync(int id, UpdateInventoryDTO dto);
         Task<bool> DeleteAsync(int id);
