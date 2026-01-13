@@ -9,14 +9,24 @@ public class Repository<T>(ApplicationContext context) : IRepository<T> where T 
 {
     protected readonly ApplicationContext _context = context;
 
-    public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> predicate)
+
+    public async Task<T?> GetByIdAsync(int id)
     {
-        return await _context.Set<T>().Where(predicate).ToListAsync();
+        return await _context.Set<T>().FindAsync(id);
     }
-    public async Task<T?> Get(Expression<Func<T, bool>> predicate)
+    public async Task<T?> GetWhereAsync(Expression<Func<T, bool>> predicate)
     {
         return await _context.Set<T>().FirstOrDefaultAsync(predicate);
     }
+    public async Task<IEnumerable<T>> GetAllAsync()
+    {
+        return await _context.Set<T>().ToListAsync();
+    }
+    public async Task<IEnumerable<T>> GetAllWhereAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await _context.Set<T>().Where(predicate).ToListAsync();
+    }
+    
     public T Create(T entity)
     {
         _context.Set<T>().AddAsync(entity);
