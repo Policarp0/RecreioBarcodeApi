@@ -1,0 +1,55 @@
+﻿@model IEnumerable<RecreioBarcode.Application.DTOs.InventoryDTO>
+
+@{
+    ViewData["Title"] = "Inventários";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+
+
+    <div class="row">
+        <h3 class="col-md-4 mb-4"> Novo </h3>
+        <h3 class="col-md-4 mb-4"> Ativo </h3>
+        <h3 class="col-md-4 mb-4"> Finalizados </h3>
+    </div>
+
+    <div class="row">
+
+        <div class="container col-md-3">
+            <form asp-controller="Inventory" asp-action="CreateFromCsv" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Nome do Inventário</label>
+                     <input type="text" class="form-control" />
+                </div>
+                <div class="mb-3">
+                     <label class="form-label">Selecionar arquivo base</label>
+                     <input type="file" class="form-control" placeholder="Digite seu nome">
+                </div>
+                <button type="submit" class="btn btn-primary">Criar</button>
+            </form>
+        </div>
+
+        <div class="container col-md-3">
+            @foreach (var item in Model)
+            {
+                <div class="card">
+                <div class="card-header">
+                    <p>Inventário de Setembro</p>
+                </div>
+                <div class="card-body">
+                    
+                    <p>Criado em 22/09/2025 09:30</p>
+                    <a class="progress-bar"></a>
+                </div>       
+                </div>
+            }
+        </div>
+
+        <div class="container col-md-3">
+        </div>
+
+
+    </div>
+</div>
