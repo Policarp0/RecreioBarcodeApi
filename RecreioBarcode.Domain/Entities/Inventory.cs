@@ -9,32 +9,30 @@ namespace RecreioBarcode.Domain.Entities
         public DateTime? FinishedAt { get; private set; } = null;
         public bool IsActive { get; private set; } = true;
         public bool ItStarted { get; private set; } = false;
-        public string File { get; private set; } = string.Empty;
 
         public ICollection<InventoryItemOut>? InventoryItemsOut { get; set; }           // Um inventário pode ter múltiplos itens fora do inventário.
         public ICollection<InventoryLocation> InventoryLocations { get; set; } = null!; // Um inventário pode ter múltiplas locações de inventário.
 
-        public Inventory(int id, string name, DateTime? createdAt, DateTime? finishedAt, bool isActive, string chargerFilePath)
+        public Inventory(int id, string name, DateTime? createdAt, DateTime? finishedAt, bool isActive)
         {
             Id = id;
-            Validate(name, createdAt, finishedAt, isActive, chargerFilePath);
+            Validate(name, createdAt, finishedAt, isActive);
         }
-        public Inventory(string name, DateTime? createdAt, DateTime? finishedAt, bool isActive, string chargerFilePath)
+        public Inventory(string name, DateTime? createdAt, DateTime? finishedAt, bool isActive)
         {
-            Validate(name, createdAt, finishedAt, isActive, chargerFilePath);
+            Validate(name, createdAt, finishedAt, isActive);
         }
        
-        public void Validate(string name, DateTime? createdAt, DateTime? finishedAt, bool isActive, string chargerFilePath)
+        public void Validate(string name, DateTime? createdAt, DateTime? finishedAt, bool isActive)
         {
             Name = name;
             CreatedAt = createdAt;
             FinishedAt = finishedAt;
             IsActive = isActive;
-            ChargerFilePath = chargerFilePath;
         }
-        public void Update(string name, DateTime? createdAt, DateTime? finishedAt, bool isActive, string chargerFilePath)
+        public void Update(string name, DateTime? createdAt, DateTime? finishedAt, bool isActive)
         {
-            Validate(name, createdAt, finishedAt, isActive, chargerFilePath);
+            Validate(name, createdAt, finishedAt, isActive);
         }
     }
 }

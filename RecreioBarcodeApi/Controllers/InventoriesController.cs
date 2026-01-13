@@ -2,6 +2,7 @@
 using RecreioBarcode.Application.DTOs;
 using RecreioBarcode.Application.Interfaces;
 using System.ComponentModel;
+using System.IO;
 
 namespace RecreioBarcode.Api.Controllers;
 
@@ -18,37 +19,40 @@ public class InventoriesController(IInventoryService inventoryService) : Control
         return Ok(inventories);
     }
 
-    //[HttpPost]
-    //public async Task<IActionResult> CreateFromCsv(InventoryDTO dto, IFormFile file)
-    //{
-    //    var newInventory = await _inventoryService.CreateFromCsv(dto);
-
-    //    return Ok(newInventory);
-    //}
-    [HttpPut]
-    public async Task<IActionResult> Put(int id, [FromBody]InventoryDTO dto)
+    [HttpPost("import")]
+    public async Task<IActionResult> CreateFromCsv([FromForm] IFormFile file)
     {
-        if(id != dto.Id)
-            return BadRequest();
-        if (dto is null)
-            return BadRequest();
+        if (file == null || file.Length == 0)
+            return BadRequest("Nenhum arquivo enviado.");
 
-        await _inventoryService.UpdateAsync(dto);
-            return Ok(dto);
+        var allowedExtensions = new[] { ".csv", ".txt" };
+        var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(extension) || !allowedExtensions.Contains(extension))
+            return BadRequest("Tipo de arquivo inválido.");
+
+        await using var stream = file.OpenReadStream();
+        var result = await _inventoryService.CreateFromCsvAsync(stream);
+
+        return Ok();
+    }
+    [HttpPatch("{id:int}")]
+    public async Task<IActionResult> Patch(int id, [FromBody] UpdateInventoryDTO dto)
+    {
+        var sucess = await _inventoryService.UpdateAsync(id, dto);
+
+        if (sucess)
+            return Ok("Inventário atualizado");
+        else
+            return BadRequest("Erro ao atualizar inventário.");     
     }
 
-    [HttpDelete("{id}:int")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _inventoryService.GetAsync(x => x.Id == id);
-        if (result is null)
-        {
-            return NotFound("Not found");
-        }
+        var sucess = await _inventoryService.DeleteAsync(id);
+        if (sucess)
+            return Ok("Inventário excluído.");
         else
-        {
-            await _inventoryService.DeleteAsync(result);
-            return Ok(result);
-        }      
+            return BadRequest("Erro ao excluir inventário."); 
     }
 }

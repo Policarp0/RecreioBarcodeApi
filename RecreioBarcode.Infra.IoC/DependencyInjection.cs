@@ -12,35 +12,34 @@ using RecreioBarcode.Infra.Data.UnitOfWork;
 using RecreioBarcode.Domain.UnitOfWork;
 using RecreioBarcode.Domain.Entities;
 
-namespace RecreioBarcode.Infra.IoC
+namespace RecreioBarcode.Infra.IoC;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
-        {
-            // Register infrastructure services here, e.g., database context, repositories, etc.
+        // Register infrastructure services here, e.g., database context, repositories, etc.
 
-            services.AddDbContext<ApplicationContext>(options =>
-                options
-                .UseSqlServer(configuration.GetConnectionString("DefaultConnection"
-                ), b=>b.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName)));
+        services.AddDbContext<ApplicationContext>(options =>
+            options
+            .UseSqlServer(configuration.GetConnectionString("DefaultConnection"
+            ), b=>b.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName)));
 
-   
-            services.AddAutoMapper(cfg => cfg.AddProfile<DomainToDTOMappingProfile>());
 
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddAutoMapper(cfg => cfg.AddProfile<DomainToDTOMappingProfile>());
 
-            //services.AddScoped<IRepository<Inventory>>, Repository<Inventory>>();
-            //services.AddScoped<IInventoryLocationRepository, InventoryLocationRepository>();
-            //services.AddScoped<IInventoryLineRepository, InventoryLineRepository>();
-            //services.AddScoped<IInventoryItemOutRepository, InventoryItemOutRepository>();
-            //services.AddScoped<ILocationRepository, LocationRepository>();
-            //services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddScoped<IInventoryService, InventoryService>();
+        //services.AddScoped<IRepository<Inventory>>, Repository<Inventory>>();
+        //services.AddScoped<IInventoryLocationRepository, InventoryLocationRepository>();
+        //services.AddScoped<IInventoryLineRepository, InventoryLineRepository>();
+        //services.AddScoped<IInventoryItemOutRepository, InventoryItemOutRepository>();
+        //services.AddScoped<ILocationRepository, LocationRepository>();
+        //services.AddScoped<IUserRepository, UserRepository>();
 
-            return services;
-        }
+        services.AddScoped<IInventoryService, InventoryService>();
+
+        return services;
     }
 }

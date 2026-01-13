@@ -9,9 +9,9 @@ namespace RecreioBarcode.Application.Services
 {
     public class LocationService : ILocationService
     {
-        private readonly ILocationRepository _repository;
+        private readonly IRepository<Location> _repository;
         private readonly IMapper _mapper;
-        public LocationService(ILocationRepository repository, IMapper mapper)
+        public LocationService(IRepository<Location> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
