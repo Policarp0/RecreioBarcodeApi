@@ -8,46 +8,87 @@
 
 <div>
 
-
     <div class="row">
-        <h3 class="col-md-4 mb-4"> Novo </h3>
-        <h3 class="col-md-4 mb-4"> Ativo </h3>
-        <h3 class="col-md-4 mb-4"> Finalizados </h3>
-    </div>
-
-    <div class="row">
-
-        <div class="container col-md-3">
-            <form asp-controller="Inventory" asp-action="CreateFromCsv" method="post">
+        <div class="col-md-4 mt-4 mb-3">
+            <h3> Novo</h3>
+            <form asp-action="CreateFromCsv" enctype="multipart/form-data" method="post">
                 <div class="mb-3">
                     <label class="form-label">Nome do Inventário</label>
-                     <input type="text" class="form-control" />
+                    <input type="text" class="form-control" />
                 </div>
                 <div class="mb-3">
-                     <label class="form-label">Selecionar arquivo base</label>
-                     <input type="file" class="form-control" placeholder="Digite seu nome">
+                    <label class="form-label">Selecionar arquivo base</label>
+                    <input type="file" name="file" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-primary">Criar</button>
             </form>
         </div>
 
-        <div class="container col-md-3">
+        <div class="col-md-4 mt-4 mb-3">
+            <h3> Ativo</h3>
             @foreach (var item in Model)
             {
-                <div class="card">
-                <div class="card-header">
-                    <p>Inventário de Setembro</p>
-                </div>
-                <div class="card-body">
-                    
-                    <p>Criado em 22/09/2025 09:30</p>
-                    <a class="progress-bar"></a>
-                </div>       
-                </div>
+                @if (item.IsActive == true)
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <span> @Html.DisplayFor(x => item.Name)</span>
+                        </div>
+                        <div class="card-body">
+                            <span> ID: @Html.DisplayFor(x => item.Id)</span><br />
+                            <span> Criado em: @Html.DisplayFor(x => item.CreatedAt)</span><br />
+                            <span>
+                                Está Ativo:
+                                @if (item.IsActive == true)
+                                {
+                                    <span>Sim</span>
+                                }
+                                else
+                                {
+                                    <span>Não</span>
+                                }
+                            </span><br />
+                            <span>
+                                Começou:
+                                @if (item.ItStarted == true)
+                                {
+                                    <span>Sim</span>
+                                }
+                                else
+                                {
+                                    <span>Não</span>
+                                }
+                            </span><br />
+                            <div>
+                                <button class="btn btn-warning mt-2"> Gerenciar</button>
+                            </div>
+                        </div>
+                    </div>
+                }
             }
         </div>
 
-        <div class="container col-md-3">
+        <div class="col-md-4 mt-4 mb-3">
+            <h3> Encerrados</h3>
+            @foreach (var item in Model)
+            {
+                @if (item.IsActive == true)
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <span> @Html.DisplayFor(x => item.Name)</span>
+                        </div>
+                        <div class="card-body">
+                            <span> ID: @Html.DisplayFor(x => item.Id)</span><br />
+                            <span> Criado em: @Html.DisplayFor(x => item.CreatedAt)</span><br />
+                            <span> Encerrado em: @Html.DisplayFor(x => item.FinishedAt)</span><br />
+                            <div>
+                                <button class="btn btn-warning mt-2"> Ver detalhes</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
         </div>
 
 
