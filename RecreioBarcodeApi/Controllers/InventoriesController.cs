@@ -19,22 +19,6 @@ public class InventoriesController(IInventoryService inventoryService) : Control
         return Ok(inventories);
     }
 
-    [HttpPost("import")]
-    public async Task<IActionResult> CreateFromCsv([FromForm] IFormFile file)
-    {
-        if (file == null || file.Length == 0)
-            return BadRequest("Nenhum arquivo enviado.");
-
-        var allowedExtensions = new[] { ".csv", ".txt" };
-        var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-        if (string.IsNullOrWhiteSpace(extension) || !allowedExtensions.Contains(extension))
-            return BadRequest("Tipo de arquivo inválido.");
-
-        await using var stream = file.OpenReadStream();
-        var result = await _inventoryService.CreateFromCsvAsync(stream);
-
-        return Ok();
-    }
     [HttpPatch("{id:int}")]
     public async Task<IActionResult> Patch(int id, [FromBody] UpdateInventoryDTO dto)
     {
