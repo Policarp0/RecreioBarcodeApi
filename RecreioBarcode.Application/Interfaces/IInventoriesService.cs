@@ -10,7 +10,7 @@ namespace RecreioBarcode.Application.Interfaces
         Task<InventoryDTO> GetWhereAsync(Expression<Func<Inventory, bool>> predicate);
         Task<IEnumerable<InventoryDTO>> GetAllAsync();
         Task<IEnumerable<InventoryDTO>> GetAllWhereAsync(Expression<Func<Inventory, bool>> predicate);
-        Task<InventoryDTO?> CreateFromCsvAsync(Stream stream);
+        Task<InventoryDTO?> CreateFromCsvAsync(string name, Stream stream);
         Task<bool> UpdateAsync(int id, UpdateInventoryDTO dto);
         Task<bool> DeleteAsync(int id);
     }

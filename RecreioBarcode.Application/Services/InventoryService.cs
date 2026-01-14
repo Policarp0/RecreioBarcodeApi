@@ -33,9 +33,9 @@ public class InventoryService(IMapper mapper, IUnitOfWork uow) : IInventoryServi
         var entities = await _uow.InventoryRepository.GetAllWhereAsync(predicate);
         return _mapper.Map<IEnumerable<InventoryDTO>>(entities);
     }
-    public async Task<InventoryDTO?> CreateFromCsvAsync(Stream stream)
+    public async Task<InventoryDTO?> CreateFromCsvAsync(string name, Stream stream)
     {
-        InventoryDTO inventoryDto = new InventoryDTO();
+        InventoryDTO inventoryDto = new InventoryDTO { Name = name};
         var inventoryEntity = _uow.InventoryRepository.Create(_mapper.Map<Inventory>(inventoryDto));
 
         if (stream is null)
