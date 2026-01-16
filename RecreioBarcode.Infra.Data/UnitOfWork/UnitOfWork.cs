@@ -16,43 +16,33 @@ public class UnitOfWork : IUnitOfWork
 
     public ApplicationContext _context;
 
-    public UnitOfWork(
-        IRepository<Inventory>? inventoryRepository,
-        IRepository<InventoryLine>? inventoryLineRepository,
-        IRepository<InventoryLocation>? inventoryLocationRepository,
-        IRepository<InventoryItemOut>? inventoryItemOutRepository,
-        IRepository<Location>? locationRepository, 
-        ApplicationContext context)
+    public UnitOfWork(ApplicationContext context)
     {
         _context = context;
     }
 
     public IRepository<Inventory> InventoryRepository
     {
-        get { return _inventoryRepository ??  new Repository<Inventory>(_context); } 
+        get { return _inventoryRepository ??=  new Repository<Inventory>(_context); } 
     }
     public IRepository<InventoryLocation> InventoryLocationRepository
     {
-        get { return _inventoryLocationRepository ?? new Repository<InventoryLocation>(_context); }
+        get { return _inventoryLocationRepository ??= new Repository<InventoryLocation>(_context); }
     }
     public IRepository<InventoryLine> InventoryLineRepository
     {
-        get { return _inventoryLineRepository ?? new Repository<InventoryLine>(_context); }
+        get { return _inventoryLineRepository ??= new Repository<InventoryLine>(_context); }
     }
     public IRepository<InventoryItemOut> InventoryItemOutRepository
     {
-        get { return _inventoryItemOutRepository ?? new Repository<InventoryItemOut>(_context); }
+        get { return _inventoryItemOutRepository ??= new Repository<InventoryItemOut>(_context); }
     }
     public IRepository<Location> LocationRepository
     {
-        get { return _locationRepository ?? new Repository<Location>(_context); }
+        get { return _locationRepository ??= new Repository<Location>(_context); }
     }
     public async Task Commit()
     {
         await _context.SaveChangesAsync();
-    }
-    public async Task Dispose()
-    {
-        await _context.DisposeAsync();
     }
 }
