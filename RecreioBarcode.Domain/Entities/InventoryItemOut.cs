@@ -1,41 +1,62 @@
-﻿namespace RecreioBarcode.Domain.Entities
+﻿
+using RecreioBarcode.Domain.Exceptions;
+
+namespace RecreioBarcode.Domain.Entities;
+
+public sealed class InventoryItemOut
 {
-    public sealed class InventoryItemOut
+    public int Id { get; private set; }
+    public string ItemCode { get; private set; } = null!;
+    public decimal Count { get; private set; } = 1;
+
+    //Navegações DDD
+    public Inventory Inventory { get; private set; } = null!;   // Um item fora do inventário pertence a um inventário.
+    public Location Location { get; private set; } = null!;     // Um item fora do inventário é encontrado em uma locação.
+    
+    //Chave Estrangeira Explícita
+    public int InventoryId { get; private set; }                // Foreign key para Inventory.
+    public int LocationId { get; private set; }                 // Foreign key para Location.
+
+                                             
+
+    private InventoryItemOut() { }
+    internal InventoryItemOut(string code, decimal count, Location location, Inventory inventory) : this()
     {
-        public int Id { get; private set; }
-        public string ItemCode { get; private set; } = string.Empty;
-        public int Count { get; private set; } = 1;
+        ValidateCode(code);
+        ValidateCount(count);
 
-        public int InventoryId { get; set; }        // Foreign key para Inventory.
-        public Inventory Inventory { get; set; } = null!;   // Um item fora do inventário pertence a um inventário.
-        public int LocationId { get; set; }         // Foreign key para Location.
-        public Location Location { get; set; } = null!;   // Um item fora do inventário é encontrado em uma locação.
-        public int UserId { get; set; }             // Foreign key para User.
-        public User User { get; set; } = null!;             // Um item fora do inventário é registrado por um usuário.
+        Inventory = inventory ?? throw new DomainException("Inventory is required");
+        Location = location ?? throw new DomainException("Location is required");
 
-        public InventoryItemOut(string itemCode, int count)
-        {
-            Validate(itemCode, count);
-            
-        }
-        public InventoryItemOut(int id, string itemCode, int count)
-        {
-            Id = id;
-            Validate(itemCode, count);
-            
-        }
-        public void Validate(string itemCode, int count)
-        {
-            ItemCode = itemCode;
-            Count = count;
-        }
-        public void Update(string itemCode, int count, int inventoryId, int locationId, int userId)
-        {
-            InventoryId = inventoryId;
-            LocationId = locationId;
-            UserId= userId;
-            Validate(itemCode, count);
+        InventoryId = inventory.Id;
+        LocationId = location.Id;
 
-        }
+        ItemCode = code.ToUpper();
+        Count = count;
     }
+    public void Update(Location location,string code, decimal count)
+    {
+        ValidateCode(code);
+        ValidateCount(count);
+        if (location is null)
+            throw new DomainException("Location is required");
+
+        ItemCode = code;
+        Count = count;
+        Location = location;
+        LocationId = location.Id;
+    }
+
+    private void ValidateCode(string code)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+            throw new DomainException("Code is required");
+        if (code.Length > 14)
+            throw new DomainException("Code must have max of 14 characters");
+    }
+    private void ValidateCount(decimal count)
+    {
+        if (count <= 0)
+            throw new DomainException("Count must be a positive value");
+    } 
 }
