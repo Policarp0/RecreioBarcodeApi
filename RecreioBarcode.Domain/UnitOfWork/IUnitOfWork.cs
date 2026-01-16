@@ -12,6 +12,5 @@ namespace RecreioBarcode.Domain.UnitOfWork
         IRepository<Location> LocationRepository { get; }
 
         Task Commit();
-        Task Dispose();
     }
 }
