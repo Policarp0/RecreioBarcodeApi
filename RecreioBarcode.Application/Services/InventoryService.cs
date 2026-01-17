@@ -15,28 +15,28 @@ public class InventoryService(IMapper mapper, IUnitOfWork uow) : IInventoryServi
 
     public async Task<InventoryDTO> GetByIdAsync(int id)
     {
-        var entity = await _uow.InventoryRepository.GetByIdAsync(id);
+        var entity = await _uow.Inventories.GetByIdAsync(id);
         return _mapper.Map<InventoryDTO>(entity);
     }
     public async Task<InventoryDTO> GetWhereAsync(Expression<Func<Inventory, bool>> predicate)
     {
-        var entity = await _uow.InventoryRepository.GetWhereAsync(predicate);
+        var entity = await _uow.Inventories.GetWhereAsync(predicate);
         return _mapper.Map<InventoryDTO>(entity);
     }
     public async Task<IEnumerable<InventoryDTO>> GetAllAsync()
     {
-        var entities = await _uow.InventoryRepository.GetAllAsync();
+        var entities = await _uow.Inventories.GetAllAsync();
         return _mapper.Map<IEnumerable<InventoryDTO>>(entities);
     }
     public async Task<IEnumerable<InventoryDTO>> GetAllWhereAsync(Expression<Func<Inventory, bool>> predicate)
     {
-        var entities = await _uow.InventoryRepository.GetAllWhereAsync(predicate);
+        var entities = await _uow.Inventories.GetAllWhereAsync(predicate);
         return _mapper.Map<IEnumerable<InventoryDTO>>(entities);
     }
     public async Task<InventoryDTO?> CreateFromCsvAsync(string name, Stream stream)
     {
         InventoryDTO inventoryDto = new InventoryDTO { Name = name};
-        var inventoryEntity = _uow.InventoryRepository.Create(_mapper.Map<Inventory>(inventoryDto));
+        var inventoryEntity = _uow.Inventories.Create(_mapper.Map<Inventory>(inventoryDto));
 
         if (stream is null)
             return null;
@@ -54,41 +54,6 @@ public class InventoryService(IMapper mapper, IUnitOfWork uow) : IInventoryServi
                 var locationDto = CreateLocationDTOFromString(parts[1]);
                 if (locationDto == null)
                     return null;
-
-                var locationEntity = await _uow.LocationRepository.GetWhereAsync(x =>
-                    x.Zona == locationDto.Zona &&
-                    x.Rua == locationDto.Rua &&
-                    x.Estante == locationDto.Estante &&
-                    x.Prateleira == locationDto.Prateleira &&
-                    x.Numero == locationDto.Numero);
-                if (locationEntity == null)
-                {
-                    locationEntity = _uow.LocationRepository.Create(_mapper.Map<Location>(locationDto));
-                }
-                else
-                    _mapper.Map(locationDto, locationEntity);
-
-                var inventoryLocationDto = new InventoryLocationDTO
-                {
-                    Inventory = inventoryDto,
-                    Location = locationDto,
-                };
-                var inventoryLocationEntity = await _uow.InventoryLocationRepository.GetWhereAsync(x => x.Inventory == inventoryEntity && x.Location == locationEntity);
-                if (inventoryLocationEntity == null)
-                {
-                    _mapper.Map(inventoryLocationDto, inventoryLocationEntity);
-                    inventoryLocationEntity = _uow.InventoryLocationRepository.Create(inventoryLocationEntity);
-                }
-                else
-                    _mapper.Map(inventoryLocationDto, inventoryLocationEntity);
-
-                var inventoryLineDto = new InventoryLineDTO
-                {
-                    InventoryLocation = inventoryLocationDto,
-                    ItemCode = parts[0]
-                };
-                var inventoryLineEntity = _mapper.Map<InventoryLine>(inventoryLineDto);
-                _uow.InventoryLineRepository.Create(inventoryLineEntity);
             }
         }
         await _uow.Commit();
@@ -96,22 +61,22 @@ public class InventoryService(IMapper mapper, IUnitOfWork uow) : IInventoryServi
     }
     public async Task<bool> UpdateAsync(int id, UpdateInventoryDTO dto)
     {
-        var entity = await _uow.InventoryRepository.GetByIdAsync(id);
+        var entity = await _uow.Inventories.GetByIdAsync(id);
         if (entity is null)
             return false;
 
         _mapper.Map(dto, entity);
-        _uow.InventoryRepository.Update(entity);
+        _uow.Inventories.Update(entity);
         await _uow.Commit();
         return true;
     }
     public async Task<bool> DeleteAsync(int id)
     {
-        var entity = await _uow.InventoryRepository.GetByIdAsync(id);
+        var entity = await _uow.Inventories.GetByIdAsync(id);
         if (entity is null)
             return false;
 
-        _uow.InventoryRepository.Delete(entity);
+        _uow.Inventories.Delete(entity);
         await _uow.Commit();
         return true;
     }
