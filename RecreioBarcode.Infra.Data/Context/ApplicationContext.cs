@@ -12,7 +12,6 @@ public class ApplicationContext : DbContext
     public DbSet<InventoryLine> InventoryLines { get; set; }
     public DbSet<InventoryLocation> InventoryLocations { get; set; }
     public DbSet<Location> Locations { get; set; }
-    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
