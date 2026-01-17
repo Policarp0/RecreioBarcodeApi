@@ -5,12 +5,9 @@ namespace RecreioBarcode.Domain.UnitOfWork
 {
     public interface IUnitOfWork
     {
-        IRepository<Inventory> InventoryRepository { get; }
-        IRepository<InventoryLocation> InventoryLocationRepository { get; }
-        IRepository<InventoryLine> InventoryLineRepository { get; }
-        IRepository<InventoryItemOut> InventoryItemOutRepository { get; }
-        IRepository<Location> LocationRepository { get; }
+        IInventoryRepository Inventories { get; }
+        ILocationRepository Locations { get; }
 
-        Task Commit();
+        Task CommitAsync( CancellationToken ct = default);
     }
 }
