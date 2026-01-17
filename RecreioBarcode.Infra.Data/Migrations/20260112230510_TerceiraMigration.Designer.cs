@@ -12,8 +12,8 @@ using RecreioBarcode.Infra.Data.Context;
 namespace RecreioBarcode.Infra.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20260106233017_second")]
-    partial class second
+    [Migration("20260112230510_TerceiraMigration")]
+    partial class TerceiraMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,10 +33,6 @@ namespace RecreioBarcode.Infra.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ChargerFilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -44,6 +40,9 @@ namespace RecreioBarcode.Infra.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ItStarted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -58,18 +57,18 @@ namespace RecreioBarcode.Infra.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ChargerFilePath = "\\TesteFilePath",
                             CreatedAt = new DateTime(2026, 1, 6, 14, 59, 25, 0, DateTimeKind.Utc),
                             IsActive = true,
+                            ItStarted = false,
                             Name = "Inventário Teste"
                         },
                         new
                         {
                             Id = 2,
-                            ChargerFilePath = "\\TesteFilePath2",
                             CreatedAt = new DateTime(2026, 1, 6, 14, 59, 25, 0, DateTimeKind.Utc),
                             FinishedAt = new DateTime(2026, 1, 6, 14, 59, 25, 0, DateTimeKind.Utc),
                             IsActive = false,
+                            ItStarted = false,
                             Name = "Inventário Teste 2"
                         });
                 });
@@ -253,6 +252,10 @@ namespace RecreioBarcode.Infra.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("IpAdress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -265,16 +268,19 @@ namespace RecreioBarcode.Infra.Data.Migrations
                         new
                         {
                             Id = 1,
+                            IpAdress = "",
                             Name = "Thiago"
                         },
                         new
                         {
                             Id = 2,
+                            IpAdress = "",
                             Name = "Pedro"
                         },
                         new
                         {
                             Id = 3,
+                            IpAdress = "",
                             Name = "Franklin"
                         });
                 });

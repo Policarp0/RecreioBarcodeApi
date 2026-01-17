@@ -5,7 +5,7 @@
 namespace RecreioBarcode.Infra.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class third : Migration
+    public partial class TerceiraMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
