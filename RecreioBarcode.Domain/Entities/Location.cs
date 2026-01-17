@@ -1,45 +1,74 @@
-﻿using System.ComponentModel;
+﻿using RecreioBarcode.Domain.Exceptions;
 
-namespace RecreioBarcode.Domain.Entities
+namespace RecreioBarcode.Domain.Entities;
+
+public sealed class Location
 {
-    public sealed class Location
+    public int Id { get; private set; }
+    public string Zona { get; private set; } = string.Empty;
+    public int Rua { get; private set; }
+    public int Estante { get; private set; }
+    public string Prateleira { get; private set; } = string.Empty;
+    public int Numero { get; private set; }
+
+    private Location(){}
+    public Location(string zona, int rua, int estante, string prateleira, int numero)
     {
-        public int Id { get; private set; }
-        public char Zona { get; private set; }
-        public int Rua { get; private set; }
-        public int Estante { get; private set; }
-        public char Prateleira { get; private set; }
-        public int Numero { get; private set; }
+        Validate(zona, rua, estante, prateleira, numero);
 
-        public ICollection<InventoryLocation>? InventoryLocations{ get; set;}   // Uma locação pode estar em múltiplas Locações de inventário.
-        public ICollection<InventoryItemOut>? InventoryItemsOut{ get; set; }     // Uma locação pode estar em múltiplos Itens fora do inventário.     
-
-        public Location(char zona, int rua, int estante, char prateleira, int numero)
-        {
-            Validate(zona, rua, estante, prateleira, numero);
-        }
-        public Location(int id, char zona, int rua, int estante, char prateleira, int numero)
-        {
-            Id = id;
-            Validate(zona, rua, estante, prateleira, numero);
-        }
-
-        public void Validate(char zona, int rua, int estante, char prateleira, int numero)
-        {
-            Zona = zona;    
-            Rua = rua;
-            Estante = estante;
-            Prateleira = prateleira;
-            Numero = numero;
-        }
-        public void Update(char zona, int rua, int estante, char prateleira, int numero)
-        {
-            Validate(zona, rua, estante, prateleira, numero);
-        }
-
-        public override string ToString()
-        {
-            return $"{Zona}{Rua}-{Estante}-{Prateleira}{Numero}";
-        }
+        Zona = zona.ToUpper();
+        Rua = rua;
+        Estante = estante;
+        Prateleira = prateleira.ToUpper();
+        Numero = numero;
     }
+
+    public void Update(string zona, int rua, int estante, string prateleira, int numero)
+    {
+        Validate(zona, rua, estante, prateleira, numero);
+        
+        Zona = zona.ToUpper();
+        Rua = rua;  
+        Estante = estante;
+        Prateleira = prateleira.ToUpper();
+        Numero = numero;
+    }
+    public override string ToString()
+    {
+        return $"{Zona}{Rua}-{Estante}-{Prateleira}{Numero}";
+    }
+    
+    private bool HasOnlyLetters(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return false;
+
+        return value.All(char.IsLetter);
+    }
+    private void Validate(string zona, int rua, int estante, string prateleira, int numero)
+    {  
+        if (string.IsNullOrWhiteSpace(zona))
+            throw new DomainException("Zona is required");
+        if (zona.Length > 2)
+            throw new DomainException("Zona must have max of 2 characters.");
+        if (!HasOnlyLetters(zona))
+            throw new DomainException("Zona must have only letters (A-Z).");
+
+        if (1 > rua || rua > 99)
+            throw new DomainException("Rua must have a value between 1 and 99");
+
+        if (1 > estante || estante > 999)
+            throw new DomainException("Estante must have a value between 1 and 999");
+
+        if (string.IsNullOrWhiteSpace(prateleira))
+            throw new DomainException("Prateleira is required");
+        if (prateleira.Length > 3)
+            throw new DomainException("Prateleira must have max of 3 characters.");
+        if (!HasOnlyLetters(prateleira))
+            throw new DomainException("Prateleira must have only letters (A-Z).");
+
+        if (1 > numero || numero > 999)
+            throw new DomainException("Numero must have a value between 1 and 999");
+    }
+
 }

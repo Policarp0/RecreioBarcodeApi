@@ -1,40 +1,55 @@
-﻿namespace RecreioBarcode.Domain.Entities
+﻿using RecreioBarcode.Domain.Exceptions;
+using System.Net.Http.Headers;
+
+namespace RecreioBarcode.Domain.Entities;
+
+public sealed class InventoryLocation
 {
-    public sealed class InventoryLocation
+    public int Id { get; private set; }
+    public bool IsInventoried { get; private set; } = false;
+    public DateTime? InventoriedAt { get; private set; } = null;
+
+    public int InventoryId { get; private set; }                                     // Foreign key para Inventory.
+    public int LocationId { get; private set; }                                      // Foreign key para Location.
+    
+    public Inventory Inventory { get; private set; } = null!;                        // Uma locação de inventário pertence a um inventário.
+    public Location Location { get; private set; } = null!;                          // Uma locação de inventário pertence a uma locação.
+
+    private readonly List<InventoryLine> _lines = [];
+    public IReadOnlyCollection<InventoryLine> InventoryLines => _lines.AsReadOnly();  // Uma locação de inventário pode ter múltiplas linhas de inventário.
+
+    private InventoryLocation(){}
+    internal InventoryLocation(Location location, Inventory inventory)
     {
-        public int Id { get; private set; }
-        public bool IsInventoried { get; private set; } = false;
-        public DateTime? InventoriedAt { get; private set; }
+        if (inventory is null)
+            throw new DomainException("Inventory is required.");
+        if (location is null)
+            throw new DomainException("Location is required.");
 
-        public int InventoryId { get; set; }                                     // Foreign key para Inventory.
-        public Inventory Inventory { get; set; } = null!;                        // Uma locação de inventário pertence a um inventário.
-        public int LocationId { get; set; }                                      // Foreign key para Location.
-        public Location Location { get; set; } = null!;                          // Uma locação de inventário pertence a uma locação.
-        public ICollection<InventoryLine> InventoryLines { get; set; } = null!;  // Uma locação de inventário pode ter múltiplas linhas de inventário.
-        public int? UserId { get; set; }                                         // Foreign key para User.
-        public User? User { get; set; }                                          // Uma locação de inventário é feita por um usuário.
+        InventoryId = inventory.Id;
+        Inventory = inventory;
+        LocationId = location.Id;
+        Location = location;
+    }
 
-        public InventoryLocation(bool isInventoried, DateTime? inventoriedAt)
-        {
-            Validate(isInventoried, inventoriedAt);
-        }
-        public InventoryLocation(int id, bool isInventoried, DateTime? inventoriedAt)
-        {
-            Id=id;
-            Validate(isInventoried, inventoriedAt);
-        }
+    public void MarkAsInventoried()
+    {
+        if (IsInventoried)
+            throw new DomainException("Location already inventoried.");
 
-        private void Validate(bool isInventoried, DateTime? inventoriedAt)
-        {
-            IsInventoried = isInventoried;
-            InventoriedAt = inventoriedAt;
-        }
-        public void Update(bool isInventoried, DateTime? inventoriedAt, int inventoryId, int locationId, int userId)
-        {
-            InventoryId = inventoryId;
-            LocationId = locationId;
-            UserId = userId;
-            Validate(isInventoried, inventoriedAt);
-        }
+        IsInventoried = true;
+        InventoriedAt = DateTime.UtcNow;
+    }
+
+    public void AddLine(string itemCode)
+    {
+        if(IsInventoried)
+            throw new DomainException("Location already inventoried.");
+
+        if (_lines.Any(x => x.ItemCode == itemCode))
+            throw new DomainException("Item code already added.");
+
+        var newLine = new InventoryLine(itemCode, this);
+        _lines.Add(newLine);
     }
 }

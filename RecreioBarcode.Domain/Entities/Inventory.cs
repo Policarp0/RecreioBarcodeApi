@@ -6,7 +6,7 @@ namespace RecreioBarcode.Domain.Entities;
 public sealed class Inventory
 {
     public int Id { get; private set; }
-    public string Name { get; private set; }
+    public string Name { get; private set; } = string.Empty;
     public DateTime CreatedAt { get; private set; }
     public DateTime? FinishedAt { get; private set; } = null;
     public bool IsActive { get; private set; }
@@ -14,17 +14,15 @@ public sealed class Inventory
 
     private readonly List<InventoryItemOut> _itemsOut = [];
     public IReadOnlyCollection<InventoryItemOut> InventoryItemsOut => _itemsOut.AsReadOnly();    // Um inventário pode ter múltiplos itens fora do inventário.
+    
     private readonly List<InventoryLocation> _locations = [];
     public IReadOnlyCollection<InventoryLocation> InventoryLocations => _locations.AsReadOnly(); // Um inventário pode ter múltiplas locações de inventário.
 
-    private Inventory() 
-    {
-        Name = string.Empty;
-        CreatedAt = DateTime.UtcNow;
-    }
-    public Inventory(string name) : this()
+    private Inventory(){ }
+    public Inventory(string name)
     {
         ValidateName(name);
+        CreatedAt = DateTime.UtcNow;
         Name = name;
         IsActive = true;
         IsOpen = false;
@@ -44,12 +42,6 @@ public sealed class Inventory
 
         IsOpen = true;
     }
-    private void Close()
-    {
-        if (!IsActive)
-            throw new DomainException("Inventory is inactive");
-        IsOpen = false;
-    }
     public void Finish()
     {
         if (!IsActive || !IsOpen)
@@ -68,6 +60,12 @@ public sealed class Inventory
         if (name.Length > 30)
             throw new DomainException("Name is too long");
     }
+    private void Close()
+    {
+        if (!IsActive)
+            throw new DomainException("Inventory is inactive");
+        IsOpen = false;
+    }
     private void CanAlter()
     {
         if (!IsActive)
@@ -76,25 +74,37 @@ public sealed class Inventory
             throw new DomainException("Inventory is not open");
     }
 
-    public void AddItemOut(Location location, string code, decimal count)
+    public void AddItemOut(string code, decimal count, InventoryLocation foundLocation)
     {
         CanAlter();
 
-        if (location is null)
-            throw new DomainException("Location is required");
+        if (foundLocation is null)
+            throw new DomainException("Location is required.");
 
-        var itemOut = new InventoryItemOut(code, count, location, this);
+        var inventoryLocation = _locations.FirstOrDefault(x => x.Id == foundLocation.Id)
+            ?? throw new DomainException("Location does not belong to this inventory");
+
+        if (inventoryLocation.IsInventoried)
+            throw new DomainException("Location already inventoried");
+
+        var itemOut = new InventoryItemOut(code, count, inventoryLocation, this);
 
         _itemsOut.Add(itemOut);
     }
-    public void UpdateItemOut(int id, Location location, string code, decimal count)
+    public void UpdateItemOut(int id, InventoryLocation foundLocation, string code, decimal count)
     {
         CanAlter();
 
         var item = InventoryItemsOut.FirstOrDefault(i => i.Id == id)
             ?? throw new DomainException("Item not found");
 
-        item.Update(location, code, count);
+        var inventoryLocation = _locations.FirstOrDefault(x => x.Id == foundLocation.Id)
+            ?? throw new DomainException("Location does not belong to this inventory");
+        
+        if (inventoryLocation.IsInventoried)
+            throw new DomainException("Location already inventoried");
+
+        item.Update(inventoryLocation, code, count);
     }
     public void RemoveItemOut(int itemId)
     {
@@ -104,5 +114,28 @@ public sealed class Inventory
             ?? throw new DomainException("Item not found");
 
         _itemsOut.Remove(item);
+    }
+
+    public void AddLocation(Location location)
+    {
+        CanAlter();
+
+        if (_locations.FirstOrDefault(x => x.LocationId == location.Id) is not null)
+            throw new DomainException("Location already exists.");
+
+        var inventoryLocation = new InventoryLocation(location, this);
+
+        _locations.Add(inventoryLocation);
+    }
+    public void MarkInventoryLocationAsInventoried(int id)
+    {
+        CanAlter();
+
+        var inventoryLocation = _locations.FirstOrDefault(i => i.Id == id);
+        if ((inventoryLocation is null))
+            throw new DomainException("Location not found.");
+        
+        inventoryLocation.MarkAsInventoried();
+
     }
 }

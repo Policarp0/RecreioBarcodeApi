@@ -10,41 +10,41 @@ public sealed class InventoryItemOut
     public decimal Count { get; private set; } = 1;
 
     //Navegações DDD
-    public Inventory Inventory { get; private set; } = null!;   // Um item fora do inventário pertence a um inventário.
-    public Location Location { get; private set; } = null!;     // Um item fora do inventário é encontrado em uma locação.
+    public Inventory Inventory { get; private set; } = null!;               // Um item fora do inventário pertence a um inventário.
+    public InventoryLocation FoundLocation { get; private set; } = null!;   // Um item fora do inventário é encontrado em uma locação.
     
     //Chave Estrangeira Explícita
-    public int InventoryId { get; private set; }                // Foreign key para Inventory.
-    public int LocationId { get; private set; }                 // Foreign key para Location.
+    public int InventoryId { get; private set; }                            // Foreign key para Inventory.
+    public int FoundLocationId { get; private set; }                        // Foreign key para Location.
 
                                              
 
     private InventoryItemOut() { }
-    internal InventoryItemOut(string code, decimal count, Location location, Inventory inventory) : this()
+    internal InventoryItemOut(string code, decimal count, InventoryLocation foundLocation, Inventory inventory) : this()
     {
         ValidateCode(code);
         ValidateCount(count);
 
         Inventory = inventory ?? throw new DomainException("Inventory is required");
-        Location = location ?? throw new DomainException("Location is required");
+        FoundLocation = foundLocation ?? throw new DomainException("Location is required");
 
         InventoryId = inventory.Id;
-        LocationId = location.Id;
+        FoundLocationId = foundLocation.Id;
 
         ItemCode = code.ToUpper();
         Count = count;
     }
-    public void Update(Location location,string code, decimal count)
+    public void Update(InventoryLocation foundLocation,string code, decimal count)
     {
         ValidateCode(code);
         ValidateCount(count);
-        if (location is null)
+        if (foundLocation is null)
             throw new DomainException("Location is required");
 
         ItemCode = code;
         Count = count;
-        Location = location;
-        LocationId = location.Id;
+        FoundLocation = foundLocation;
+        FoundLocationId = foundLocation.Id;
     }
 
     private void ValidateCode(string code)

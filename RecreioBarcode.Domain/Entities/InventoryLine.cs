@@ -1,34 +1,46 @@
-﻿namespace RecreioBarcode.Domain.Entities
+﻿using RecreioBarcode.Domain.Exceptions;
+
+namespace RecreioBarcode.Domain.Entities;
+
+public sealed class InventoryLine
 {
-    public sealed class InventoryLine
+    public int Id { get; private set; }
+    public string ItemCode { get; private set; } = string.Empty;
+    public int Count { get; private set; } = 0;
+
+    public int InventoryLocationId { get; private set; }                      // Foreign key para InventoryLocation.
+    public InventoryLocation InventoryLocation { get; private set; } = null!; // Uma linha de inventário pertence a uma locação de inventário.
+
+    private InventoryLine() {}
+    internal InventoryLine(string itemCode, InventoryLocation inventoryLocation)
+    { 
+        if (inventoryLocation is null)
+            throw new DomainException("Inventory location is required.");
+
+        Validate(itemCode);
+
+        ItemCode = itemCode;
+        InventoryLocation = inventoryLocation;
+        InventoryLocationId = inventoryLocation.Id;
+    }
+
+    private void Validate(string itemCode)
     {
-        public int Id { get; private set; }
-        public string ItemCode { get; private set; } = string.Empty;
-        public int Count { get; private set; } = 0;
+        if (string.IsNullOrWhiteSpace(itemCode))
+            throw new DomainException("Item code is required.");
+        if (itemCode.Length is > 14)
+            throw new DomainException("Item code must have max of 14 characters."); 
+    }
 
-        public int InventoryLocationId { get; set; }                      // Foreign key para InventoryLocation.
-        public InventoryLocation InventoryLocation { get; set; } = null!; // Uma linha de inventário pertence a uma locação de inventário.
-
-
-        public InventoryLine(string itemCode, int count)
-        {
-            Validate(itemCode, count);
-        }
-        public InventoryLine(int id, string itemCode, int count)
-        {
-            Id = id;
-            Validate(itemCode, count);
-        }
-    
-        public void Validate(string itemCode, int count)
-        {
-            ItemCode = itemCode;
-            Count = count;
-        }
-        public void Update(string itemCode, int count, int inventoryId)
-        {
-            InventoryLocationId = inventoryId;
-            Validate(itemCode, count);
-        }
+    public void ChangeCount(int count)
+    {
+        if (count is < 0)
+            throw new DomainException("Count must be a positive value.");
+        
+        Count = count;  
+    }
+    public override string ToString()
+    {
+        return $"{ItemCode} - {Count}";
     }
 }
