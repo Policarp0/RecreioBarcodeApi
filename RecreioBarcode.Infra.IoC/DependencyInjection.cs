@@ -29,7 +29,8 @@ public static class DependencyInjection
 
         services.AddAutoMapper(cfg => cfg.AddProfile<DomainToDTOMappingProfile>());
 
-        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        services.AddScoped<IInventoryRepository, InventoryRepository>();
+        services.AddScoped<ILocationRepository, LocationRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddScoped<IInventoryService, InventoryService>();

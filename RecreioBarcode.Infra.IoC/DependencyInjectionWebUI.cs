@@ -24,8 +24,9 @@ public static class DependencyInjectionWebUI
 
         services.AddAutoMapper(cfg => cfg.AddProfile<DomainToDTOMappingProfile>());
 
+        services.AddScoped<IInventoryRepository, InventoryRepository>();
+        services.AddScoped<ILocationRepository, LocationRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
         services.AddScoped<IInventoryService, InventoryService>();
 
