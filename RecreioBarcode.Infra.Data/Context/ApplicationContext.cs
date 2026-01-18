@@ -5,13 +5,13 @@ namespace RecreioBarcode.Infra.Data.Context;
 
 public class ApplicationContext : DbContext 
 {
-    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
-    {}
-    public DbSet<Inventory> Inventories { get; set; }
-    public DbSet<InventoryItemOut> InventoryItemsOut { get; set; }
-    public DbSet<InventoryLine> InventoryLines { get; set; }
-    public DbSet<InventoryLocation> InventoryLocations { get; set; }
-    public DbSet<Location> Locations { get; set; }
+    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) {}
+
+    public DbSet<Inventory> Inventories { get; set; } = null!;
+    public DbSet<InventoryItemOut> InventoryItemsOut { get; set; } = null!;
+    public DbSet<InventoryLine> InventoryLines { get; set; } = null!;
+    public DbSet<InventoryLocation> InventoryLocations { get; set; } = null!;
+    public DbSet<Location> Locations { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
