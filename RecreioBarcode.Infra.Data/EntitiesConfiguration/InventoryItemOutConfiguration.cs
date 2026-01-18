@@ -8,12 +8,30 @@ namespace RecreioBarcode.Infra.Data.EntitiesConfiguration
     {
         public void Configure(EntityTypeBuilder<InventoryItemOut> builder)
         {
+            builder.ToTable("InventoryItemsOut");
+
             builder.HasKey(x => x.Id);
 
-            builder.HasOne(x => x.Inventory).WithMany(x => x.InventoryItemsOut).HasForeignKey(x => x.InventoryId);
-            builder.HasOne(x => x.Location).WithMany(x => x.InventoryItemsOut).HasForeignKey(x => x.LocationId);
-            builder.HasOne(x => x.User).WithMany(x => x.InventoryItemsOut).HasForeignKey(x => x.UserId);
+            builder.Property(x => x.ItemCode)
+                .HasMaxLength(14)
+                .IsRequired();
 
+            builder.Property(x => x.Count)
+                .IsRequired()
+                .HasDefaultValue(1m)
+                .HasPrecision(10,2);
+
+            builder.HasOne(x => x.Inventory)
+                .WithMany(x => x.InventoryItemsOut)
+                .IsRequired()
+                .HasForeignKey(x => x.InventoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(x => x.FoundLocation)
+                .WithMany()
+                .HasForeignKey(x => x.FoundLocationId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

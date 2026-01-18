@@ -8,9 +8,29 @@ namespace RecreioBarcode.Infra.Data.EntitiesConfiguration
     {
         public void Configure(EntityTypeBuilder<InventoryLine> builder)
         {
+            builder.ToTable("InventoryLines");
+
             builder.HasKey(x => x.Id);
 
-            builder.HasOne(x => x.InventoryLocation).WithMany(x => x.InventoryLines).HasForeignKey(x => x.InventoryLocationId);
+            builder.Property(x => x.Count)
+                .IsRequired()
+                .HasDefaultValue(0)
+                .HasPrecision(10,2);
+
+            builder.Property(x => x.ItemCode)
+                .IsRequired()
+                .HasMaxLength(14);
+
+            builder.HasOne(x => x.InventoryLocation)
+                .WithMany(x => x.InventoryLines)
+                .HasForeignKey(x => x.InventoryLocationId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            
+            builder.HasIndex(x => new { x.InventoryLocationId, x.ItemCode })
+                .IsUnique()
+                .HasDatabaseName("UX_InventoryLines_InventoryLocation_ItemCode");
         }
     }
 }
