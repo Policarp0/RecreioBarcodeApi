@@ -17,8 +17,6 @@ public sealed class InventoryItemOut
     public int InventoryId { get; private set; }                            // Foreign key para Inventory.
     public int FoundLocationId { get; private set; }                        // Foreign key para Location.
 
-                                             
-
     private InventoryItemOut() { }
     internal InventoryItemOut(string code, decimal count, InventoryLocation foundLocation, Inventory inventory) : this()
     {
@@ -56,7 +54,7 @@ public sealed class InventoryItemOut
     }
     private void ValidateCount(decimal count)
     {
-        if (count <= 0)
+        if (count < 0)
             throw new DomainException("Count must be a positive value");
     } 
 }

@@ -15,8 +15,8 @@ public sealed class InventoryLocation
     public Inventory Inventory { get; private set; } = null!;                        // Uma locação de inventário pertence a um inventário.
     public Location Location { get; private set; } = null!;                          // Uma locação de inventário pertence a uma locação.
 
-    private readonly List<InventoryLine> _lines = [];
-    public IReadOnlyCollection<InventoryLine> InventoryLines => _lines.AsReadOnly();  // Uma locação de inventário pode ter múltiplas linhas de inventário.
+    private readonly List<InventoryLine> _inventoryLines = [];
+    public IReadOnlyCollection<InventoryLine> InventoryLines => _inventoryLines.AsReadOnly();  // Uma locação de inventário pode ter múltiplas linhas de inventário.
 
     private InventoryLocation(){}
     internal InventoryLocation(Location location, Inventory inventory)
@@ -46,10 +46,10 @@ public sealed class InventoryLocation
         if(IsInventoried)
             throw new DomainException("Location already inventoried.");
 
-        if (_lines.Any(x => x.ItemCode == itemCode))
+        if (_inventoryLines.Any(x => x.ItemCode == itemCode))
             throw new DomainException("Item code already added.");
 
         var newLine = new InventoryLine(itemCode, this);
-        _lines.Add(newLine);
+        _inventoryLines.Add(newLine);
     }
 }
