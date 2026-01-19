@@ -127,6 +127,25 @@ public sealed class Inventory
 
         _inventoryLocations.Add(inventoryLocation);
     }
+    public bool ExistLocation(Location location)
+    {
+        return _inventoryLocations.Any(l => l.Location == location);
+    }
+    public void AddLine(string itemCode, InventoryLocation inventoryLocation)
+    {
+        CanAlter();
+
+        var il = _inventoryLocations.FirstOrDefault(i => i == inventoryLocation);
+
+        if (il is null)
+            throw new DomainException("Inventory Location not found.");
+
+        if (inventoryLocation.InventoryLines.Any(i => i.ItemCode == itemCode))
+            throw new DomainException("Item code already added to this inventory location.");
+
+        var line = new InventoryLine(itemCode, inventoryLocation);
+        
+    }
     public void MarkInventoryLocationAsInventoried(int id)
     {
         CanAlter();

@@ -11,41 +11,31 @@ public class InventoryController(IInventoryService inventoryService) : Controlle
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var viewModel = new InventoryViewModel
-        {
-            ActiveInventories = await _inventoryService.GetAllWhereAsync(x => x.IsActive == true),
-
-            InactiveInventories = await _inventoryService.GetAllWhereAsync(x => x.IsActive == false)
-        };
-        return View(viewModel);
+        return View();
     }
     [HttpGet]
     public async Task<IActionResult> Management(int id)
     {
         var Inventory = await _inventoryService.GetByIdAsync(id);
         return View(Inventory);
-
     }
 
     [HttpGet]
     public async Task<IActionResult> Lines(int id)
     {
-        var lines = await _inventoryService.GetLinesAsync(id);
-        return View(lines);
+        return View();
     }
 
     [HttpGet]
     public async Task<IActionResult> Locations(int id)
     {
-        var locations = await _inventoryService.GetLocationsAsync(id);
-        return View(locations);
+        return View();
     }
 
     [HttpGet]
     public async Task<IActionResult> ItemsOut(int id)
     {
-        var itemsOut = await _inventoryService.GetItemsOutAsync(id);
-        return View(itemsOut);
+        return View();
     }
 
     [HttpPost]
@@ -64,5 +54,4 @@ public class InventoryController(IInventoryService inventoryService) : Controlle
 
         return RedirectToAction(nameof(Index));
     }
-
 }
