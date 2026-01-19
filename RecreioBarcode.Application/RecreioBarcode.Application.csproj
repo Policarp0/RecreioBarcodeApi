@@ -20,4 +20,9 @@
     <ProjectReference Include="..\RecreioBarcode.Domain\RecreioBarcode.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Abstractions\" />
+    <Folder Include="UseCase\Locations\ListLocation\" />
+  </ItemGroup>
+
 </Project>
