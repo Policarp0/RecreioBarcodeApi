@@ -70,8 +70,8 @@ public sealed class Inventory
     {
         if (!IsActive)
             throw new DomainException("Inventory is inactive");
-        if (!IsOpen)
-            throw new DomainException("Inventory is not open");
+        if (IsOpen)
+            throw new DomainException("Inventory already open");
     }
 
     public void AddItemOut(string code, decimal count, InventoryLocation foundLocation)
@@ -116,35 +116,41 @@ public sealed class Inventory
         _inventoryItemsOut.Remove(item);
     }
 
-    public void AddLocation(Location location)
+    // Função idempotente, chamar ela mais de uma vez nao altera o resultado
+    public InventoryLocation GetOrAddInventoryLocation(Location location)
     {
         CanAlter();
 
-        if (_inventoryLocations.FirstOrDefault(x => x.LocationId == location.Id) is not null)
-            throw new DomainException("Location already exists.");
+        if (location is null)
+            throw new DomainException("Location is required.");
 
-        var inventoryLocation = new InventoryLocation(location, this);
+        var existing = _inventoryLocations.FirstOrDefault(x => x.LocationId == location.Id);
+        if (existing is not null)
+            return existing;
 
-        _inventoryLocations.Add(inventoryLocation);
+        var created = new InventoryLocation(location, this);
+        _inventoryLocations.Add(created);
+
+        return created;
     }
-    public bool ExistLocation(Location location)
-    {
-        return _inventoryLocations.Any(l => l.Location == location);
-    }
-    public void AddLine(string itemCode, InventoryLocation inventoryLocation)
+
+    public InventoryLine GetOrAddInventoryLine(string itemCode, Location location)
     {
         CanAlter();
 
-        var il = _inventoryLocations.FirstOrDefault(i => i == inventoryLocation);
+        if (string.IsNullOrWhiteSpace(itemCode))
+            throw new DomainException("Item code is required.");
+        if (location is null)
+            throw new DomainException("Location is required.");
 
-        if (il is null)
-            throw new DomainException("Inventory Location not found.");
-
-        if (inventoryLocation.InventoryLines.Any(i => i.ItemCode == itemCode))
-            throw new DomainException("Item code already added to this inventory location.");
-
-        var line = new InventoryLine(itemCode, inventoryLocation);
+        var inventoryLocation = _inventoryLocations.FirstOrDefault(il =>il.LocationId == location.Id)
+            ?? throw new DomainException("Location doesn't exists in this inventory");
         
+        var existing = inventoryLocation.InventoryLines.FirstOrDefault(il => il.ItemCode == itemCode);
+        if (existing is not null) 
+            return existing;
+
+        return inventoryLocation.GetOrAddInventoryLine(itemCode);
     }
     public void MarkInventoryLocationAsInventoried(int id)
     {

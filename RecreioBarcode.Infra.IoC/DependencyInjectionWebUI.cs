@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RecreioBarcode.Application.Interfaces;
 using RecreioBarcode.Application.Mappings;
-using RecreioBarcode.Application.Services;
+using RecreioBarcode.Application.UseCase.Inventories.CreateInventory;
+using RecreioBarcode.Application.UseCase.Inventories.CreateInventoryFromCsv;
 using RecreioBarcode.Domain.Interfaces;
 using RecreioBarcode.Domain.UnitOfWork;
 using RecreioBarcode.Infra.Data.Context;
@@ -28,7 +28,7 @@ public static class DependencyInjectionWebUI
         services.AddScoped<ILocationRepository, LocationRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        services.AddScoped<IInventoryService, InventoryService>();
+        services.AddScoped<ICreateInventoryFromCsv, CreateInventoryFromCsvHandler>();
 
         return services;
     }

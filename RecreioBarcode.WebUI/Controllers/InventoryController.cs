@@ -1,57 +1,42 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RecreioBarcode.Application.Interfaces;
+using RecreioBarcode.Application.UseCase.Inventories.CreateInventory;
+using RecreioBarcode.Application.UseCase.Inventories.CreateInventoryFromCsv;
 using RecreioBarcode.WebUI.ViewModel;
 
 namespace RecreioBarcode.WebUI.Controllers;
 
-public class InventoryController(IInventoryService inventoryService) : Controller
+public class InventoryController(ICreateInventoryFromCsv createFromCsv) : Controller
 {
-    private readonly IInventoryService _inventoryService = inventoryService;
+    private readonly ICreateInventoryFromCsv _createFromCsv = createFromCsv;
 
     [HttpGet]
-    public async Task<IActionResult> Index()
-    {
-        return View();
-    }
-    [HttpGet]
-    public async Task<IActionResult> Management(int id)
-    {
-        var Inventory = await _inventoryService.GetByIdAsync(id);
-        return View(Inventory);
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Lines(int id)
-    {
-        return View();
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Locations(int id)
-    {
-        return View();
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> ItemsOut(int id)
-    {
-        return View();
-    }
+    public IActionResult CreateFromCsv()
+        => View(new CreateInventoryFromCsvViewModel());
 
     [HttpPost]
-    public async Task<IActionResult> CreateFromCsv([FromForm] string name, IFormFile file)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateFromCsv(CreateInventoryFromCsvViewModel vm, CancellationToken ct)
     {
-        if (file == null || file.Length == 0)
-            return BadRequest("Tipo de arquivo inválido.");
+        if (string.IsNullOrWhiteSpace(vm.Name))
+            ModelState.AddModelError(nameof(vm.Name), "Name is required.");
 
-        var allowedExtensions = new[] { ".csv", ".txt" };
-        var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-        if (string.IsNullOrWhiteSpace(extension) || !allowedExtensions.Contains(extension))
-            return BadRequest("Tipo de arquivo inválido.");
+        if (vm.File is null || vm.File.Length == 0)
+            ModelState.AddModelError(nameof(vm.File), "CSV file is required.");
 
-        await using var stream = file.OpenReadStream();
-        var result = await _inventoryService.CreateFromCsvAsync(name,stream);
+        if (!ModelState.IsValid)
+            return View(vm);
 
-        return RedirectToAction(nameof(Index));
+        await using var stream = vm.File!.OpenReadStream();
+
+        var cmd = new CreateInventoryFromCsvCommand(vm.Name, stream);
+        var result = await _createFromCsv.Handle(cmd, ct);
+
+        return RedirectToAction(nameof(Details), new { id = result.Id });
+    }
+
+    public IActionResult Details(int id)
+    {
+        // aqui você chama outro use case de query
+        return View();
     }
 }

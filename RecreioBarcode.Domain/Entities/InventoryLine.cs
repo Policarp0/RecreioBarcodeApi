@@ -21,7 +21,6 @@ public sealed class InventoryLine
 
         ItemCode = itemCode;
         InventoryLocation = inventoryLocation;
-        InventoryLocationId = inventoryLocation.Id;
     }
 
     private void Validate(string itemCode)

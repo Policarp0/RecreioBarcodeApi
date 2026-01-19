@@ -26,9 +26,6 @@ public sealed class InventoryItemOut
         Inventory = inventory ?? throw new DomainException("Inventory is required");
         FoundLocation = foundLocation ?? throw new DomainException("Location is required");
 
-        InventoryId = inventory.Id;
-        FoundLocationId = foundLocation.Id;
-
         ItemCode = code.ToUpper();
         Count = count;
     }

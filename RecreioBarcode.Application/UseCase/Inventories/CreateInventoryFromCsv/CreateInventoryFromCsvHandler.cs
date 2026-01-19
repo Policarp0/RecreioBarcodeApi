@@ -1,27 +1,39 @@
-﻿using RecreioBarcode.Application.UseCase.Locations.CreateLocation;
+﻿using RecreioBarcode.Application.UseCase.Inventories.CreateInventoryFromCsv;
 using RecreioBarcode.Domain.Entities;
 using RecreioBarcode.Domain.Interfaces;
+using RecreioBarcode.Domain.UnitOfWork;
 
 namespace RecreioBarcode.Application.UseCase.Inventories.CreateInventory;
 
-public class CreateInventoryFromCsvHandler(IInventoryRepository inventoryRepo, ILocationRepository locationRepo)
+public class CreateInventoryFromCsvHandler
+    (IUnitOfWork uow,
+    ILocationRepository locationRepo,
+    IInventoryRepository inventoryRepo)
+    : ICreateInventoryFromCsv
 {
-    private readonly IInventoryRepository _inventoryRepo = inventoryRepo;
+    private readonly IUnitOfWork _uow = uow;
     private readonly ILocationRepository _locationRepo = locationRepo;
+    private readonly IInventoryRepository _inventoryRepo = inventoryRepo;
 
-    public async Task<CreateInventoryFromCsvCommand>Handle(CreateInventoryFromCsvCommand cmd, CancellationToken ct)
+    public async Task<CreateInventoryFromCsvResult> Handle(CreateInventoryFromCsvCommand cmd, CancellationToken ct)
     {
-        if(string.IsNullOrWhiteSpace(cmd.Name))
+        if (string.IsNullOrWhiteSpace(cmd.Name))
             throw new ArgumentNullException("Name is required.");
 
         var inventory = new Inventory(cmd.Name);
 
-        StreamReader reader = new(cmd.file);
-        reader.ReadLine(); // Pula a primeira linha
-        var line = reader.ReadLine();
+        using StreamReader reader = new(cmd.file);
 
-        while (line != ";")
+        await reader.ReadLineAsync(); // Pula a primeira linha
+
+        string? line;
+        while ((line = await reader.ReadLineAsync()) is not null)
         {
+            line = line.Trim();
+
+            if (line == ";")
+                break;
+
             if (line == null)
                 throw new ArgumentException("Read line error");
             if (line.Count(c => c == ';') != 1)
@@ -35,15 +47,14 @@ public class CreateInventoryFromCsvHandler(IInventoryRepository inventoryRepo, I
                 throw new ArgumentException("Error read line input[1]");
 
             var location = await GetOrCreateLocation(input[1], ct);
-            if (!inventory.ExistLocation(location))
-                inventory.AddLocation(location);
-
-            inventory.
-            
-
+            var inventoryLocation = inventory.GetOrAddInventoryLocation(location);
+            var inventoryLine = inventory.GetOrAddInventoryLine(input[0], location);
+        }
+        await _inventoryRepo.AddAsync(inventory);
+        await _uow.CommitAsync(ct);
+        return new CreateInventoryFromCsvResult(inventory.Id);
     }
-
-    private async Task<Location> GetOrCreateLocation (string input, CancellationToken ct)
+    private async Task<Location> GetOrCreateLocation(string input, CancellationToken ct)
     {
         if (!int.TryParse(input.Substring(1, 2).Trim(), out int rua))
             throw new ArgumentException("Erro parsing rua.");
@@ -53,9 +64,9 @@ public class CreateInventoryFromCsvHandler(IInventoryRepository inventoryRepo, I
 
         if (!int.TryParse(input.Substring(7, 3).Trim(), out int numero))
             throw new ArgumentException("Erro parsing numero.");
-            
+
         var zona = input.Substring(0, 1).Trim();
-        
+
         var prateleira = input.Substring(6, 1).Trim();
 
         var location = await _locationRepo.GetByDetailsAsync(zona, rua, estante, prateleira, numero, ct);
