@@ -8,6 +8,8 @@ public sealed class InventoryLocation
     public int Id { get; private set; }
     public bool IsInventoried { get; private set; } = false;
     public DateTime? InventoriedAt { get; private set; } = null;
+    public int TotalLines { get; private set; }
+    public int TotalInventoriedLines { get; private set; }
 
     public int InventoryId { get; private set; }                                     // Foreign key para Inventory.
     public int LocationId { get; private set; }                                      // Foreign key para Location.

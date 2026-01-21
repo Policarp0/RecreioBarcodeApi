@@ -6,12 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using RecreioBarcode.Application.Mappings;
 using RecreioBarcode.Domain.Interfaces;
 using RecreioBarcode.Infra.Data.Repositories;
-using RecreioBarcode.Application.Interfaces;
-using RecreioBarcode.Application.Services;
 using RecreioBarcode.Infra.Data.UnitOfWork;
 using RecreioBarcode.Domain.UnitOfWork;
-using RecreioBarcode.Domain.Entities;
-using RecreioBarcode.Application.DTOs;
+
 
 namespace RecreioBarcode.Infra.IoC;
 
@@ -32,8 +29,6 @@ public static class DependencyInjection
         services.AddScoped<IInventoryRepository, InventoryRepository>();
         services.AddScoped<ILocationRepository, LocationRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-        services.AddScoped<IInventoryService, InventoryService>();
 
         return services;
     }

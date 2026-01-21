@@ -1,5 +1,6 @@
 ﻿using RecreioBarcode.Application.UseCase.Inventories.CreateInventoryFromCsv;
 using RecreioBarcode.Domain.Entities;
+using RecreioBarcode.Domain.Exceptions;
 using RecreioBarcode.Domain.Interfaces;
 using RecreioBarcode.Domain.UnitOfWork;
 
@@ -14,6 +15,7 @@ public class CreateInventoryFromCsvHandler
     private readonly IUnitOfWork _uow = uow;
     private readonly ILocationRepository _locationRepo = locationRepo;
     private readonly IInventoryRepository _inventoryRepo = inventoryRepo;
+    private readonly Dictionary<string, Location> _locationCache = new(StringComparer.OrdinalIgnoreCase);
 
     public async Task<CreateInventoryFromCsvResult> Handle(CreateInventoryFromCsvCommand cmd, CancellationToken ct)
     {
@@ -26,29 +28,37 @@ public class CreateInventoryFromCsvHandler
 
         await reader.ReadLineAsync(); // Pula a primeira linha
 
+        int lineNumber = 0; 
         string? line;
         while ((line = await reader.ReadLineAsync()) is not null)
         {
-            line = line.Trim();
+            lineNumber++;
+            if (line == ";") break;
+            if (line.Length == 0) continue;
 
-            if (line == ";")
-                break;
+            try
+            {
+                if (line == null)
+                    throw new ArgumentException("Read line error");
+                if (line.Count(c => c == ';') != 1)
+                    throw new ArgumentException("Line don't have two columns");
 
-            if (line == null)
-                throw new ArgumentException("Read line error");
-            if (line.Count(c => c == ';') != 1)
-                throw new ArgumentException("Line don't have two columns");
+                var input = line.Split(';'); // [0] é código, [1] é locação
 
-            var input = line.Split(';'); // [0] é código, [1] é locação
+                if (input[1].Length > 11)
+                    throw new ArgumentException("Error read line input[1]");
 
-            if (input[0].Length > 14)
-                throw new ArgumentException("Error read line input[0]");
-            if (input[1].Length > 11)
-                throw new ArgumentException("Error read line input[1]");
+                var location = await GetOrCreateLocation(input[1], ct);
+                var inventoryLocation = inventory.GetOrAddInventoryLocation(location);
+                var inventoryLine = inventory.GetOrAddInventoryLine(input[0], location);
+            }
+            catch (DomainException ex)
+            {
+                throw new DomainException(
+                    $"CSV inválido na linha {lineNumber}. Conteúdo: '{line}'. Erro: {ex.Message}"
+                    );
+            }
 
-            var location = await GetOrCreateLocation(input[1], ct);
-            var inventoryLocation = inventory.GetOrAddInventoryLocation(location);
-            var inventoryLine = inventory.GetOrAddInventoryLine(input[0], location);
         }
         await _inventoryRepo.AddAsync(inventory);
         await _uow.CommitAsync(ct);
@@ -58,25 +68,27 @@ public class CreateInventoryFromCsvHandler
     {
         if (!int.TryParse(input.Substring(1, 2).Trim(), out int rua))
             throw new ArgumentException("Erro parsing rua.");
-
         if (!int.TryParse(input.Substring(3, 3).Trim(), out int estante))
             throw new ArgumentException("Erro parsing estante.");
-
         if (!int.TryParse(input.Substring(7, 3).Trim(), out int numero))
             throw new ArgumentException("Erro parsing numero.");
-
         var zona = input.Substring(0, 1).Trim();
-
         var prateleira = input.Substring(6, 1).Trim();
 
+        var key = $"{zona}-{rua}-{estante}-{prateleira}-{numero}";
+
+        if (_locationCache.TryGetValue(key, out var cached))
+            return cached;
+
         var location = await _locationRepo.GetByDetailsAsync(zona, rua, estante, prateleira, numero, ct);
-        if (location is not null)
-            return location;
-        else
+
+        if (location is null)
         {
             location = new Location(zona, rua, estante, prateleira, numero);
             await _locationRepo.AddAsync(location, ct);
-            return location;
         }
+
+            _locationCache[key] = location;
+            return location;
     }
 }

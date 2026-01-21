@@ -10,8 +10,16 @@ public class InventoryController(ICreateInventoryFromCsv createFromCsv) : Contro
     private readonly ICreateInventoryFromCsv _createFromCsv = createFromCsv;
 
     [HttpGet]
+    public IActionResult Index()
+    {
+        return View(); 
+    }
+
+    [HttpGet]
     public IActionResult CreateFromCsv()
-        => View(new CreateInventoryFromCsvViewModel());
+    {
+        return View(new CreateInventoryFromCsvViewModel());
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -31,7 +39,7 @@ public class InventoryController(ICreateInventoryFromCsv createFromCsv) : Contro
         var cmd = new CreateInventoryFromCsvCommand(vm.Name, stream);
         var result = await _createFromCsv.Handle(cmd, ct);
 
-        return RedirectToAction(nameof(Details), new { id = result.Id });
+        return RedirectToAction("Index");
     }
 
     public IActionResult Details(int id)

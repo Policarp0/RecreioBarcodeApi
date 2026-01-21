@@ -124,7 +124,7 @@ public sealed class Inventory
         if (location is null)
             throw new DomainException("Location is required.");
 
-        var existing = _inventoryLocations.FirstOrDefault(x => x.LocationId == location.Id);
+        var existing = _inventoryLocations.FirstOrDefault(x => x.Location.ToString() == location.ToString());
         if (existing is not null)
             return existing;
 
@@ -143,14 +143,15 @@ public sealed class Inventory
         if (location is null)
             throw new DomainException("Location is required.");
 
-        var inventoryLocation = _inventoryLocations.FirstOrDefault(il =>il.LocationId == location.Id)
+        var inventoryLocation = _inventoryLocations.FirstOrDefault(il =>il.Location.ToString() == location.ToString())
             ?? throw new DomainException("Location doesn't exists in this inventory");
         
         var existing = inventoryLocation.InventoryLines.FirstOrDefault(il => il.ItemCode == itemCode);
+
         if (existing is not null) 
             return existing;
 
-        return inventoryLocation.GetOrAddInventoryLine(itemCode);
+         return inventoryLocation.GetOrAddInventoryLine(itemCode);
     }
     public void MarkInventoryLocationAsInventoried(int id)
     {

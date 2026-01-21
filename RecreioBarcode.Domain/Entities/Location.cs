@@ -10,6 +10,7 @@ public sealed class Location
     public int Estante { get; private set; }
     public string Prateleira { get; private set; } = string.Empty;
     public int Numero { get; private set; }
+    public string Key { get; private set; } = string.Empty;
 
     private Location(){}
     public Location(string zona, int rua, int estante, string prateleira, int numero)
@@ -21,6 +22,7 @@ public sealed class Location
         Estante = estante;
         Prateleira = prateleira.ToUpper();
         Numero = numero;
+        Key = $"{Zona}-{Rua}-{Prateleira}-{Estante}-{Numero}";
     }
 
     public void Update(string zona, int rua, int estante, string prateleira, int numero)
@@ -32,10 +34,6 @@ public sealed class Location
         Estante = estante;
         Prateleira = prateleira.ToUpper();
         Numero = numero;
-    }
-    public override string ToString()
-    {
-        return $"{Zona}{Rua}-{Estante}-{Prateleira}{Numero}";
     }
     
     private bool HasOnlyLetters(string value)
@@ -64,11 +62,11 @@ public sealed class Location
             throw new DomainException("Prateleira is required");
         if (prateleira.Length > 3)
             throw new DomainException("Prateleira must have max of 3 characters.");
+
         if (!HasOnlyLetters(prateleira))
             throw new DomainException("Prateleira must have only letters (A-Z).");
 
         if (1 > numero || numero > 999)
             throw new DomainException("Numero must have a value between 1 and 999");
     }
-
 }

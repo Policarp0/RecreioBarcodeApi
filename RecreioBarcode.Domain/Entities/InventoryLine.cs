@@ -26,9 +26,7 @@ public sealed class InventoryLine
     private void Validate(string itemCode)
     {
         if (string.IsNullOrWhiteSpace(itemCode))
-            throw new DomainException("Item code is required.");
-        if (itemCode.Length is > 14)
-            throw new DomainException("Item code must have max of 14 characters."); 
+            throw new DomainException("Item code is required."); 
     }
 
     public void ChangeCount(int count)

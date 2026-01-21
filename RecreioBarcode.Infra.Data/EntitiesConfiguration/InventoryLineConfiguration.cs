@@ -19,7 +19,7 @@ namespace RecreioBarcode.Infra.Data.EntitiesConfiguration
 
             builder.Property(x => x.ItemCode)
                 .IsRequired()
-                .HasMaxLength(14);
+                .HasMaxLength(255);
 
             builder.HasOne(x => x.InventoryLocation)
                 .WithMany(x => x.InventoryLines)

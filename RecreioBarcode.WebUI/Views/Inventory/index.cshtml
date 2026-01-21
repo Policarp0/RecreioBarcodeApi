@@ -1,92 +1,16 @@
-﻿@model RecreioBarcode.WebUI.ViewModel.CreateFromCsv
-
-@{
+﻿@{
     ViewData["Title"] = "Inventários";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <div>
-
     <div class="row">
         <div class="col-md-4 mt-4">
             <h3 class="mb-3"> Novo</h3>
-            <form asp-action="CreateFromCsv" enctype="multipart/form-data" method="post">
-                <div class="mb-3">
-                    <label class="form-label">Nome do Inventário</label>
-                    <input type="text" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Selecionar arquivo base</label>
-                    <input type="file" name="file" class="form-control">
-                </div>
+            <form asp-action="CreateFromCsv" enctype="multipart/form-data" method="get">      
                 <button type="submit" class="btn btn-primary">Criar</button>
             </form>
         </div>
-
-        <div class="col-md-4 mt-4">
-            <h3 class ="mb-3"> Ativo</h3>
-            @foreach (var item in Model.ActiveInventories)
-            {
-                <div class="card">
-                    <div class="card-header">
-                        <span> @Html.DisplayFor(x => item.Name)</span>
-                    </div>
-                    <div class="card-body">
-                        <span> ID: @Html.DisplayFor(x => item.Id)</span><br />
-                        <span> Criado em: @Html.DisplayFor(x => item.CreatedAt)</span><br />
-                        <span>
-                            Está Ativo:
-                            @if (item.IsActive == true)
-                            {
-                                <span>Sim</span>
-                            }
-                            else
-                            {
-                                <span>Não</span>
-                            }
-                        </span><br />
-                        <span>
-                            Começou:
-                            @if (item.ItStarted == true)
-                            {
-                                <span>Sim</span>
-                            }
-                            else
-                            {
-                                <span>Não</span>
-                            }
-                        </span><br />
-                        <div>
-                            <a asp-action="Management" asp-route-id="@item.Id" class="btn btn-warning mt-2">
-                                <span>Gerenciar</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-
-        <div class="col-md-4 mt-4">
-            <h3 class="mb-3"> Encerrados</h3>
-            @foreach (var item in Model.InactiveInventories)
-            {
-                <div class="card">
-                    <div class="card-header">
-                        <span> @Html.DisplayFor(x => item.Name)</span>
-                    </div>
-                    <div class="card-body">
-                        <span> ID: @Html.DisplayFor(x => item.Id)</span><br />
-                        <span> Criado em: @Html.DisplayFor(x => item.CreatedAt)</span><br />
-                        <span> Encerrado em: @Html.DisplayFor(x => item.FinishedAt)</span><br />
-                        <div>
-                            <button class="btn btn-primary mt-2"> Ver detalhes</button>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-
-
     </div>
 </div>
