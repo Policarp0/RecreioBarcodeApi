@@ -6,5 +6,7 @@ public interface IInventoryRepository
 {
     Task<Inventory?> GetByIdAsync(int id, CancellationToken ct = default);
     Task<Inventory?> GetSummaryByIdAsync(int id, CancellationToken ct = default);
+    Task<IEnumerable<Inventory>> GetAllAsync(CancellationToken ct = default);
     Task AddAsync(Inventory inventory, CancellationToken ct = default);
+    void Remove(Inventory inventory);
 }

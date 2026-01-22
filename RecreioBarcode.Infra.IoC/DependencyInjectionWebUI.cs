@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RecreioBarcode.Application.Mappings;
-using RecreioBarcode.Application.UseCase.Inventories.CreateInventory;
-using RecreioBarcode.Application.UseCase.Inventories.CreateInventoryFromCsv;
+using RecreioBarcode.Application.UseCase.Inventories.Commands.Create;
 using RecreioBarcode.Domain.Interfaces;
 using RecreioBarcode.Domain.UnitOfWork;
 using RecreioBarcode.Infra.Data.Context;
@@ -22,13 +20,13 @@ public static class DependencyInjectionWebUI
             ), b => b.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName)));
 
 
-        services.AddAutoMapper(cfg => cfg.AddProfile<DomainToDTOMappingProfile>());
+        //services.AddLogging(cfg => cfg.Services.AddOptions<>();
 
         services.AddScoped<IInventoryRepository, InventoryRepository>();
         services.AddScoped<ILocationRepository, LocationRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        services.AddScoped<ICreateInventoryFromCsv, CreateInventoryFromCsvHandler>();
+        services.AddScoped<ICreate, CreateHandle>();
 
         return services;
     }

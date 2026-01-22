@@ -1,29 +1,47 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RecreioBarcode.Application.UseCase.Inventories.Commands.Create;
 using RecreioBarcode.Application.UseCase.Inventories.CreateInventory;
-using RecreioBarcode.Application.UseCase.Inventories.CreateInventoryFromCsv;
 using RecreioBarcode.WebUI.ViewModel;
+using RecreioBarcode.WebUI.ViewModels;
 
 namespace RecreioBarcode.WebUI.Controllers;
 
-public class InventoryController(ICreateInventoryFromCsv createFromCsv) : Controller
+public class InventoryController(ICreate createFromCsv) : Controller
 {
-    private readonly ICreateInventoryFromCsv _createFromCsv = createFromCsv;
+    private readonly ICreate _createFromCsv = createFromCsv;
 
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult Dashboard()
     {
+        var dashboard = new InventoryDashboardVM();
+        dashboard = 
         return View(); 
     }
 
     [HttpGet]
-    public IActionResult CreateFromCsv()
+    public IActionResult Create()
+    {
+        return View(new CreateInventoryFromCsvViewModel());
+    }
+    [HttpGet]
+    public IActionResult Edit()
+    {
+        return View(new CreateInventoryFromCsvViewModel());
+    }
+    [HttpGet]
+    public IActionResult Details()
+    {
+        return View(new CreateInventoryFromCsvViewModel());
+    }
+    [HttpGet]
+    public IActionResult Delete()
     {
         return View(new CreateInventoryFromCsvViewModel());
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateFromCsv(CreateInventoryFromCsvViewModel vm, CancellationToken ct)
+    public async Task<IActionResult> Create(CreateInventoryFromCsvViewModel vm, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(vm.Name))
             ModelState.AddModelError(nameof(vm.Name), "Name is required.");
@@ -36,15 +54,9 @@ public class InventoryController(ICreateInventoryFromCsv createFromCsv) : Contro
 
         await using var stream = vm.File!.OpenReadStream();
 
-        var cmd = new CreateInventoryFromCsvCommand(vm.Name, stream);
+        var cmd = new CreateCommand(vm.Name, stream);
         var result = await _createFromCsv.Handle(cmd, ct);
 
         return RedirectToAction("Index");
-    }
-
-    public IActionResult Details(int id)
-    {
-        // aqui você chama outro use case de query
-        return View();
     }
 }

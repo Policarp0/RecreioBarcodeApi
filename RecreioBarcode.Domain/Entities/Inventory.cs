@@ -9,8 +9,14 @@ public sealed class Inventory
     public string Name { get; private set; } = string.Empty;
     public DateTime CreatedAt { get; private set; }
     public DateTime? FinishedAt { get; private set; } = null;
+    public TimeSpan? Duration { get; private set; } = null;
     public bool IsActive { get; private set; }
     public bool IsOpen { get; private set; } 
+    public int TotalLocations { get; private set; }
+    public int TotalInventoriedLocations { get; private set; }
+    public int TotalLines { get; private set; }
+    public int TotalItemsOut { get; private set; }
+
 
     private readonly List<InventoryItemOut> _inventoryItemsOut = [];
     public IReadOnlyCollection<InventoryItemOut> InventoryItemsOut => _inventoryItemsOut.AsReadOnly();    // Um inventário pode ter múltiplos itens fora do inventário.
@@ -26,6 +32,10 @@ public sealed class Inventory
         Name = name;
         IsActive = true;
         IsOpen = false;
+        TotalLocations = 0;
+        TotalInventoriedLocations = 0;
+        TotalLines = 0;
+        TotalItemsOut = 0;
     }
 
     public void ChangeName(string name)
@@ -90,6 +100,7 @@ public sealed class Inventory
         var itemOut = new InventoryItemOut(code, count, inventoryLocation, this);
 
         _inventoryItemsOut.Add(itemOut);
+        TotalItemsOut +=1;
     }
     public void UpdateItemOut(int id, InventoryLocation foundLocation, string code, decimal count)
     {
@@ -109,11 +120,14 @@ public sealed class Inventory
     public void RemoveItemOut(int itemId)
     {
         CanAlter();
+        if (TotalItemsOut == 0)
+            throw new DomainException("Total items out must be a positive value");
 
         var item = _inventoryItemsOut.FirstOrDefault(i => i.Id == itemId)
             ?? throw new DomainException("Item not found");
 
         _inventoryItemsOut.Remove(item);
+        TotalItemsOut -=1;
     }
 
     // Função idempotente, chamar ela mais de uma vez nao altera o resultado
@@ -124,12 +138,13 @@ public sealed class Inventory
         if (location is null)
             throw new DomainException("Location is required.");
 
-        var existing = _inventoryLocations.FirstOrDefault(x => x.Location.ToString() == location.ToString());
+        var existing = _inventoryLocations.FirstOrDefault(x => x.Location.Key == location.Key);
         if (existing is not null)
             return existing;
 
         var created = new InventoryLocation(location, this);
         _inventoryLocations.Add(created);
+        TotalLocations += 1;
 
         return created;
     }
@@ -143,7 +158,7 @@ public sealed class Inventory
         if (location is null)
             throw new DomainException("Location is required.");
 
-        var inventoryLocation = _inventoryLocations.FirstOrDefault(il =>il.Location.ToString() == location.ToString())
+        var inventoryLocation = _inventoryLocations.FirstOrDefault(il =>il.Location.Key == location.Key)
             ?? throw new DomainException("Location doesn't exists in this inventory");
         
         var existing = inventoryLocation.InventoryLines.FirstOrDefault(il => il.ItemCode == itemCode);
@@ -151,7 +166,7 @@ public sealed class Inventory
         if (existing is not null) 
             return existing;
 
-         return inventoryLocation.GetOrAddInventoryLine(itemCode);
+        return inventoryLocation.GetOrAddInventoryLine(itemCode);
     }
     public void MarkInventoryLocationAsInventoried(int id)
     {
@@ -161,6 +176,7 @@ public sealed class Inventory
         if ((inventoryLocation is null))
             throw new DomainException("Location not found.");
         
+        TotalInventoriedLocations += 1;
         inventoryLocation.MarkAsInventoried();
 
     }

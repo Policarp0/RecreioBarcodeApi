@@ -1,23 +1,22 @@
-﻿using RecreioBarcode.Application.UseCase.Inventories.CreateInventoryFromCsv;
-using RecreioBarcode.Domain.Entities;
+﻿using RecreioBarcode.Domain.Entities;
 using RecreioBarcode.Domain.Exceptions;
 using RecreioBarcode.Domain.Interfaces;
 using RecreioBarcode.Domain.UnitOfWork;
 
-namespace RecreioBarcode.Application.UseCase.Inventories.CreateInventory;
+namespace RecreioBarcode.Application.UseCase.Inventories.Commands.Create;
 
-public class CreateInventoryFromCsvHandler
+public sealed class CreateHandle
     (IUnitOfWork uow,
     ILocationRepository locationRepo,
     IInventoryRepository inventoryRepo)
-    : ICreateInventoryFromCsv
+    : ICreate
 {
     private readonly IUnitOfWork _uow = uow;
     private readonly ILocationRepository _locationRepo = locationRepo;
     private readonly IInventoryRepository _inventoryRepo = inventoryRepo;
     private readonly Dictionary<string, Location> _locationCache = new(StringComparer.OrdinalIgnoreCase);
 
-    public async Task<CreateInventoryFromCsvResult> Handle(CreateInventoryFromCsvCommand cmd, CancellationToken ct)
+    public async Task<CreateResult> Handle(CreateCommand cmd, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(cmd.Name))
             throw new ArgumentNullException("Name is required.");
@@ -62,7 +61,7 @@ public class CreateInventoryFromCsvHandler
         }
         await _inventoryRepo.AddAsync(inventory);
         await _uow.CommitAsync(ct);
-        return new CreateInventoryFromCsvResult(inventory.Id);
+        return new CreateResult(inventory.Id);
     }
     private async Task<Location> GetOrCreateLocation(string input, CancellationToken ct)
     {
