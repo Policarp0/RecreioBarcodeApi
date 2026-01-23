@@ -18,6 +18,6 @@ public sealed class GetLocationByItemCodeHandle(IInventoryRepository inventoryRe
         var inventory = await _inventoryRepo.GetByIdAsync(query.InventoryId)
             ?? throw new UseCaseException("Inventory not found.");
         
-        var inventoryLocation = inventory.InventoryLocations.
+        
     }
 }
