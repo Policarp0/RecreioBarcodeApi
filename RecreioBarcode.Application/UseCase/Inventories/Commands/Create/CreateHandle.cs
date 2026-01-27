@@ -9,7 +9,6 @@ public sealed class CreateHandle
     (IUnitOfWork uow,
     ILocationRepository locationRepo,
     IInventoryRepository inventoryRepo)
-    : ICreate
 {
     private readonly IUnitOfWork _uow = uow;
     private readonly ILocationRepository _locationRepo = locationRepo;

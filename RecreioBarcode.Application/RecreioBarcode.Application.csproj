@@ -13,16 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="16.0.0" />
+    <PackageReference Include="MediatR" Version="14.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RecreioBarcode.Domain\RecreioBarcode.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\Abstractions\" />
-    <Folder Include="UseCase\Locations\ListLocation\" />
   </ItemGroup>
 
 </Project>

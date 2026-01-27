@@ -1,23 +1,23 @@
-﻿using RecreioBarcode.Application.Common.Exceptions;
-using RecreioBarcode.Domain.Interfaces;
+﻿using RecreioBarcode.Application.Abstractions.Queries;
+using RecreioBarcode.Application.Common.Exceptions;
+using RecreioBarcode.Application.UseCase.Inventories.Queries.ReadModels;
 
 namespace RecreioBarcode.Application.UseCase.Inventories.Queries.ListInventoryLocations;
 
-public sealed class ListInventoryLocationsHandler(IInventoryRepository inventoryRepo)
+public sealed class ListInventoryLocationsHandler(IInventoryReadQueries readQueries)
 {
-    private readonly IInventoryRepository _inventoryRepo = inventoryRepo;
+    private readonly IInventoryReadQueries _readQueries = readQueries;
 
-    public async Task<ListInventoryLocationsResult> Handle(ListInventoryLocationsQuery query, CancellationToken ct)
+    public async Task<IReadOnlyList<InventoryLocationDto>> Handle(
+        ListInventoryLocationsQuery query,
+        CancellationToken ct)
     {
         if (query.InventoryId <= 0)
-            throw new UseCaseException("Inventory Id must be a positive value.");
+            throw new UseCaseException("InventoryId must be a positive value.");
 
-        var items = await _inventoryRepo.ListInventoryLocationsAsync(
+        return await _readQueries.ListInventoryLocationsAsync(
             query.InventoryId,
             query.OnlyInventoried,
-            query.Search,
             ct);
-
-        return new ListInventoryLocationsResult(query.InventoryId, items);
     }
 }
