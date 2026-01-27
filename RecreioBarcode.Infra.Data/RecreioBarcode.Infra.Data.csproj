@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RecreioBarcode.Application\RecreioBarcode.Application.csproj" />
     <ProjectReference Include="..\RecreioBarcode.Domain\RecreioBarcode.Domain.csproj" />
   </ItemGroup>
 

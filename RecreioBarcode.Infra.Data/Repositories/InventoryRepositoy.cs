@@ -12,7 +12,7 @@ public class InventoryRepository(ApplicationContext context) : IInventoryReposit
     public async Task<Inventory?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         return await _context.Inventories
-            .Include(i => i.InventoryLocations.Where()
+            .Include(i => i.InventoryLocations)
                 .ThenInclude(i => i.InventoryLines)
             .Include(i => i.InventoryItemsOut)
             .FirstOrDefaultAsync(i => i.Id == id, ct);
@@ -21,9 +21,9 @@ public class InventoryRepository(ApplicationContext context) : IInventoryReposit
     {
         return await _context.Inventories.FindAsync(id, ct);
     }
-    public async Task<IEnumerable<Inventory>> GetAllAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<Inventory>> List(CancellationToken ct = default)
     {
-        return await _context.Inventories.ToListAsync(ct);
+        return await _context.Inventories.AsNoTracking().ToListAsync(ct);
     }
     public async Task AddAsync(Inventory inventory, CancellationToken ct = default)
     {
@@ -34,4 +34,16 @@ public class InventoryRepository(ApplicationContext context) : IInventoryReposit
         _context.Inventories.Remove(inventory);
     }
 
+    public async Task<IReadOnlyList<InventoryLocation>> ListInventoryLocations(int inventoryId, bool? onlyInventoried = null, CancellationToken ct = default)
+    {
+        var query = _context.InventoryLocations
+            .AsNoTracking()
+            .Where(il => il.InventoryId == inventoryId);
+        
+        if (onlyInventoried.HasValue)
+            query = query.Where(il => il.IsInventoried == onlyInventoried.Value);
+        
+        return await query.ToListAsync(ct);
+    }
+  
 }

@@ -1,13 +1,12 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RecreioBarcode.Infra.Data.Context;
-using Microsoft.EntityFrameworkCore;
-using RecreioBarcode.Application.Mappings;
 using RecreioBarcode.Domain.Interfaces;
+using RecreioBarcode.Domain.UnitOfWork;
+using RecreioBarcode.Infra.Data.Context;
 using RecreioBarcode.Infra.Data.Repositories;
 using RecreioBarcode.Infra.Data.UnitOfWork;
-using RecreioBarcode.Domain.UnitOfWork;
 
 
 namespace RecreioBarcode.Infra.IoC;
@@ -22,9 +21,6 @@ public static class DependencyInjection
             options
             .UseSqlServer(configuration.GetConnectionString("DefaultConnection"
             ), b=>b.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName)));
-
-
-        services.AddAutoMapper(cfg => cfg.AddProfile<DomainToDTOMappingProfile>());
 
         services.AddScoped<IInventoryRepository, InventoryRepository>();
         services.AddScoped<ILocationRepository, LocationRepository>();

@@ -1,20 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RecreioBarcode.Application.UseCase.Inventories.Commands.Create;
-using RecreioBarcode.Application.UseCase.Inventories.CreateInventory;
 using RecreioBarcode.WebUI.ViewModel;
 using RecreioBarcode.WebUI.ViewModels;
 
 namespace RecreioBarcode.WebUI.Controllers;
 
-public class InventoryController(ICreate createFromCsv) : Controller
+public class InventoryController : Controller
 {
-    private readonly ICreate _createFromCsv = createFromCsv;
 
     [HttpGet]
     public IActionResult Dashboard()
     {
-        var dashboard = new InventoryDashboardVM();
-        dashboard = 
         return View(); 
     }
 
@@ -55,7 +51,6 @@ public class InventoryController(ICreate createFromCsv) : Controller
         await using var stream = vm.File!.OpenReadStream();
 
         var cmd = new CreateCommand(vm.Name, stream);
-        var result = await _createFromCsv.Handle(cmd, ct);
 
         return RedirectToAction("Index");
     }

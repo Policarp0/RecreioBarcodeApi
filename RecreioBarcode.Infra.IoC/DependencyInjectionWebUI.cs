@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecreioBarcode.Application.UseCase.Inventories.Commands.Create;
+using RecreioBarcode.Application.UseCase.Inventories.Queries.GetInventoryDetails;
 using RecreioBarcode.Domain.Interfaces;
 using RecreioBarcode.Domain.UnitOfWork;
 using RecreioBarcode.Infra.Data.Context;
@@ -19,14 +20,12 @@ public static class DependencyInjectionWebUI
             .UseSqlServer(configuration.GetConnectionString("DefaultConnection"
             ), b => b.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName)));
 
-
-        //services.AddLogging(cfg => cfg.Services.AddOptions<>();
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(GetInventoryDetailsHandle).Assembly));
 
         services.AddScoped<IInventoryRepository, InventoryRepository>();
         services.AddScoped<ILocationRepository, LocationRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        services.AddScoped<ICreate, CreateHandle>();
 
         return services;
     }
